@@ -1,39 +1,83 @@
 # Really Good Tondi (RGT)
 
-RGT transfers client-validated assets on Tondi v10 Notes. A sender commits to a successor allocation in the transaction’s RGT Facet and encrypts the information needed to recover it to the recipient’s view key. A wallet can scan an archive, authenticate and replay its checkpoint bodies, recover its live allocations and sign a new transfer with its seed. [Protocol and trust model](TONDI_MIGRATION.md)
+Suppose Alice pays Bob 100 units of an asset. A year later Bob loses his wallet. Alice has gone offline. What must survive for Bob to pay Carol?
 
-## Reproduce a transfer and recovery
+Bob's seed can reproduce his signing key. It cannot tell him which payment gave him the 100 units. RGT is a protocol for transferring assets on Tondi v10. Each payment carries the evidence its recipient will need to recover the asset and spend it again. Tondi settles which Note was spent. The recipient checks what happened to the asset.
 
-Place the Tondi v10 source in `../Tondi` and run the following against a new output directory. The runner creates its own single-validator ordinary-v10 ledger and deletes the temporary keys and node database when it finishes.
+## A payment
 
-```sh
-python3 scripts/v10_transfer_local.py target/rgt-run
+A Tondi Note is an output that can be spent once. Alice could give Bob and Carol two payment histories, each claiming the same 100 units. Both transfers would have to consume the same Note. At most one can be certified as a successful spend.
+
+Alice's transaction commits to an asset operation. The operation identifies Bob's new Note by a hash that includes a secret random value. Bob receives the data needed to recompute that hash. He checks the contract, amount and destination against his invoice. Alice can spend her Note and omit a valid successor. In that case the ledger records a spend and the asset allocation is burned.
+
+```mermaid
+sequenceDiagram
+    actor Alice
+    actor Bob
+    participant T as Tondi ledger
+    Bob->>Alice: Receiving descriptor and agreed payment terms
+    Alice->>T: Spend the old Note, commit to the successor, attach ciphertext
+    Bob->>T: Request the transaction and its checkpoint evidence
+    T-->>Bob: Certified spend and encrypted capsule
+    Bob->>Bob: Decrypt and verify that his Note received 100 units
 ```
 
-The runner issues 100 units, pays Bob, restores Bob in an empty directory, spends the restored allocation to Carol, and restores Carol. It checks that Bob’s spent Note disappears and that an unrelated seed finds no assets. It stops the node before verifying both deliveries. [Wallet commands](QUICK_START.md)
+The ciphertext is a *recipient-encrypted capsule*. Alice combines a fresh ephemeral key with Bob's public view key using ECDH. From the shared secret she derives a one-time AES-256-GCM key. Bob can derive the same key and recover the private data. Observers can still see when the transaction occurred, how large the capsule is, and which payments use the same receiving authorization.
 
-## Measured sizes
+## How much history must Bob check?
 
-These are bytes from a two-hop local run. Each transfer consumed one Note and created one successor. The independently supplied genesis manifest was 21,876 bytes.
+The simplest capsule carries the history up to Alice's Note. Bob checks issuance and each transfer in turn. When he pays Carol, she has one more transfer to check. If every payment carries its predecessors, the history must eventually exceed the space in a transaction.
 
-| Delivery | Certified checkpoint | Encrypted capsule on chain | Signed envelope | Private history | Certified full-history package | Package gzip |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Alice → Bob | 4 | 1,560 | 1,896 | 3,066 | 14,686 | 7,789 |
-| Bob → Carol | 8 | 3,774 | 4,110 | 7,494 | 37,751 | 19,591 |
+A recursive receipt lets the same work be carried forward. The first receipt proves issuance. To produce the next receipt, the prover verifies the preceding one, checks that the new transaction consumes the Note it named, and applies the contract rules to the successor. Bob can then check one receipt and the Tondi evidence for his own payment. This rule currently covers a single unlocked allocation transferred in full under unsigned issuing terms. Splits and merges need a different rule.
 
-The capsule is already included in the envelope. This archive profile stores the full predecessor history, including earlier signed envelopes. Its size increases with successive transfers and is bounded by the native transaction limit. The offline package also carries certified headers and the bodies containing the relevant transfers. Timing and other traffic change the measured package size.
+There is a reason Alice puts the **preceding** receipt in the capsule. The capsule is part of the transaction bytes that determine Bob's new transaction ID. Alice can already prove how she acquired her Note. Once her payment is certified, Bob has the final ID, the private opening and the exact transaction. He can fold that last step into a new receipt before paying Carol. [Protocol and proof formats](TONDI_MIGRATION.md)
 
-### Recursive delivery and compact capsules
+## Recovery after a loss
 
-The recursive guest proves issuance and verifies the preceding receipt at each whole-allocation transfer. An offline recipient checks the pinned guest, opens the proven cell, checks the invoice and verifies the terminal transaction against Tondi finality. A wallet can send onward with just this state and the recovered native Note. [Recursive proof build and verification](WORKSPACE_SETUP.md#recursive-proof)
+Bob starts with his seed, the chain genesis and a recent checkpoint obtained independently. His wallet authenticates and replays the archived bodies from genesis. It uses the view key to find his capsules and checks which of the recovered Notes are still live. A payment to Bob remains a valid historical fact even after he has spent it. Only an unspent Note belongs in his recovered balance.
 
-| Same delivery as above | Succinct receipt | Certified recursive package | Package gzip |
-| --- | ---: | ---: | ---: |
-| Alice → Bob | 278,738 | 300,265 | 255,363 |
-| Bob → Carol, reusing Bob’s receipt | 278,738 | 318,522 | 258,557 |
+```mermaid
+flowchart TD
+    S["Seed and genesis"] --> V["View key"]
+    S --> K["Spending key"]
+    A["Archived transaction bodies"] --> R["Authenticate and replay the ledger"]
+    P["Trusted checkpoint"] --> R
+    R --> D["Find and decrypt Bob's capsules"]
+    V --> D
+    D --> C["Verify the asset and its successor Note"]
+    C --> L{"Note still unspent at the verified tip?"}
+    L -->|No| H["Past payment"]
+    L -->|Yes| W["Restore the allocation and its spending input"]
+    W --> N["Prepare and sign the next transfer"]
+    K --> N
+```
 
-These short histories cost less to deliver in full. The second recursive step verified the preceding receipt and used 4,194,304 guest cycles across four segments. Local CPU proving took 703 seconds with another prover running. Both deliveries verify offline. The first transfer’s wallet snapshot was 226,593 bytes. Snapshots use fixed-width encoding for proof words. The delivery files above use variable-length encoding.
+A checkpoint can authenticate bytes that an archive supplies. If every copy of the ciphertext has been pruned, the seed cannot reconstruct it. Bob needs at least one archive that still has the bodies. The independently obtained checkpoint also matters because an old, correctly signed view of the ledger can omit a later spend.
 
-The archived capsule carries the *predecessor* proof and the new recipient’s private payment terms. The wallet locates the current transaction in the authenticated archive and folds that one transfer into a new proof. This avoids embedding a proof of a transaction inside its own body. The complete delivery package also carries the terminal transaction and checkpoint evidence. Its size depends on the transaction and on the distance from genesis.
+## What it costs
 
-In a separate run on the updated parent, Bob used a 226,592-byte snapshot to pay Carol. His signed transaction was 227,636 bytes, including a 227,300-byte encrypted capsule. Carol recovered the allocation from an empty wallet at checkpoint 8. Her local recovery file was 682,379 bytes. It contains the predecessor snapshot and the current transaction body. This step used 56,114,463 guest cycles across 58 segments.
+These are byte counts for the same two payments on a local, single-validator ledger. Each payment moved the whole 100-unit allocation. The two offline packages in each column certify the same delivery. Both were verified with the node offline.
+
+| Bytes | Alice → Bob | Bob → Carol |
+| --- | ---: | ---: |
+| On-chain capsule carrying full history | 1,560 | 3,774 |
+| Signed transaction including that capsule | 1,896 | 4,110 |
+| Private transfer history | 3,066 | 7,494 |
+| Full-history package with finality evidence | 14,686 | 37,751 |
+| Recursive receipt alone | 278,738 | 278,738 |
+| Recursive package with finality evidence | 300,265 | 318,522 |
+
+For these two payments, the full history took fewer bytes. Recursion let Carol verify the earlier asset history with one receipt. Her package still grew because it also carried the terminal transaction and checkpoint evidence. The cost of producing the second receipt was 4,194,304 guest cycles.
+
+A separate payment used a capsule carrying the predecessor receipt. The encrypted capsule occupied **227,300 bytes** of a **227,636-byte** signed transaction. Carol recovered the 100 units in an empty wallet. Executing the proof program on this recovered payment used **56,114,463 guest cycles**. The native limit is 524,288 bytes for the entire transaction.
+
+<details>
+<summary>Measurement details</summary>
+
+The first two transfers were certified at checkpoints 4 and 8. The independently supplied genesis manifest was 21,876 bytes. With gzip, the full-history packages were 7,789 and 19,591 bytes. The recursive packages were 255,363 and 258,557 bytes. The second receipt took 703 seconds to prove on the test CPU while another prover was running.
+
+Bob's first verified wallet snapshot was 226,593 bytes. Snapshots use fixed-width encoding for proof words. Recursive delivery files use variable-length encoding. In the separate payment, Bob started with a 226,592-byte snapshot. At checkpoint 8 Carol recovered a 682,379-byte local file containing the previous snapshot and the current body.
+
+</details>
+
+To repeat the two-hop transfer and seed recovery, place the Tondi v10 checkout at `../Tondi` and run `python3 scripts/v10_transfer_local.py target/rgt-run` with a fresh output directory. [Wallet walkthrough](QUICK_START.md) · [Reproduce the recursive proofs](WORKSPACE_SETUP.md#recursive-proof)
