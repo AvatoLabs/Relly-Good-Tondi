@@ -74,11 +74,11 @@ fn strategy_transparent() -> common::Result {
     #[commit_encode(strategy = transparent, id = DumbId)]
     struct ShortLen(u16);
 
-    verify_commit(ShortLen(0), "2bb00b2f346511235882255a898a224b6858e18ebec0a11967eb51f0ed1a2ff5");
+    verify_commit(ShortLen(0), "5d3b955be18c815716feb914f4d766c9189a282a45a11bbb6a24376d673d947a");
     #[allow(clippy::mixed_case_hex_literals)]
     verify_commit(
         ShortLen(0xFFde),
-        "0290490b549dfcb8a222d42abf53afbd9fadcef480bc61d7a9aeaf19288b394c",
+        "813c2109c503802d88cda46a5d0e2a998af3212ffa183e3ec7ffc216a679a277",
     );
 
     Ok(())
@@ -99,9 +99,9 @@ fn strategy_strict_enum() -> common::Result {
         C,
     }
 
-    verify_commit(Prim::A, "82c0f0f259e8cffecead54325fadb48f15a4e761dae5ffaf31209993eacbb24d");
-    verify_commit(Prim::B, "6db0981aac502e87a0498d169599ceace4c6480a182590d47e82d63b85cb3c72");
-    verify_commit(Prim::C, "e4648d71abe10c0efd626b803ac86d57b1cdc8842f6baa9799ef95cf510784b6");
+    verify_commit(Prim::A, "2cd5440b15682ddcb40ceb529ff1d20fe1b0120290e6eecae5988704d91c3460");
+    verify_commit(Prim::B, "5363bcacbd9912c1739ba1ffb5d4363596307655b616d3d26300918aeeb1a8cc");
+    verify_commit(Prim::C, "c452d5c154613f6f0b2d92c1164dc32e090e10bbc7d38791bb38a985c4b58eb2");
 
     Ok(())
 }
@@ -117,7 +117,7 @@ fn strategy_strict_tuple() -> common::Result {
 
     verify_commit(
         TaggedInfo(0xdead, 0xbeefcafebaddafec),
-        "8506078e6f47e4b75470cb45a18922785f1a54ba4501473b80ba7b0c363d7490",
+        "55dc92ab9047dbbed0762924fde15fcdc05e4db7eb323f4b2b5114edef47311d",
     );
 
     Ok(())
@@ -140,7 +140,7 @@ fn strategy_strict_struct() -> common::Result {
             a: 0xdead,
             b: 0xbeefcafebaddafec,
         },
-        "8506078e6f47e4b75470cb45a18922785f1a54ba4501473b80ba7b0c363d7490",
+        "55dc92ab9047dbbed0762924fde15fcdc05e4db7eb323f4b2b5114edef47311d",
     );
 
     Ok(())
@@ -171,7 +171,7 @@ fn enum_associated() -> common::Result {
             hash: default!(),
             ord: 1,
         },
-        "18cc83e934de8ad385ce41c8c9b6a2ee3331817907d6ccf8c5ba4ca3570e65a3",
+        "6ccb34da4920bd64a04fe680dba91351fe93862f8c87e738b08106c78ce73e5b",
     );
 
     Ok(())
@@ -205,7 +205,7 @@ fn enum_custom_tags() -> common::Result {
             hash: [8; 32],
             ord: 1,
         },
-        "67e6cd9574e329906d28ce7143aef7124372e04d09bd46b130445fec2baf9fc6",
+        "e2e94c6ffee482beb726d4e41c708bf49b9b7f4c480be527e08d64d484335dfa",
     );
 
     Ok(())
@@ -232,7 +232,7 @@ fn conceal() -> common::Result {
 
     verify_commit(
         Data::Revealed(0xcafe1234),
-        "fd5ee38918347000fc3cbf31def233b226d14a47bbc6bac18fd6389c3fd16d2e",
+        "d0929142cf5cfbe9a95d226d355e7fe039eacecef0fc66b46b8a3ea722b6f7e2",
     );
 
     Ok(())

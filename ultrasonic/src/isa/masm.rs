@@ -69,10 +69,8 @@
 macro_rules! uasm {
     ($( $tt:tt )+) => {{
         use $crate::instr;
-        #[cfg(not(feature = "std"))]
-        use alloc::vec::Vec;
 
-        let mut code: Vec<$crate::Instr<$crate::aluvm::alu::LibId>> = Default::default();
+        let mut code: $crate::AssemblerVec<$crate::Instr<$crate::aluvm::alu::LibId>> = Default::default();
         #[allow(unreachable_code)] {
             $crate::aluvm::alu::aluasm_inner! { code => $( $tt )+ }
         }

@@ -52,7 +52,7 @@ Specifically,
 
 ## History
 
-- The need for AluVM recognized as a part of RGB project in Mar, the 24 & 31st, 2021 (see developers
+- The need for AluVM recognized as a part of RGT project in Mar, the 24 & 31st, 2021 (see developers
   call <https://youtu.be/JmKNyOMv68I>)
 - Concept was presented on 19th of May 2021([check the recoding](https://youtu.be/Mma0oyiVbSE))
 - v0.1 release of Rust AluVM implementation on the 28th of May 2021

@@ -19,39 +19,23 @@ members = [
     "client_side_validation/commit_verify/derive",
     "client_side_validation/single_use_seals",
     
-    # Tondi protocol core
-    "bp-core",
-    "bp-core/consensus",
-    "bp-core/dbc",
-    "bp-core/seals",
+    # RGT Core
+    "rgt-core",
+    "rgt-lineage",
+    "rgt-proof",
     
-    # Tondi wallet standards
-    "bp-std",
-    "bp-std/invoice",
-    "bp-std/derive",
-    "bp-std/descriptors",
-    "bp-std/pstt",
+    # RGT Standard
+    "rgt-std",
+    "rgt-std/cli",
+    "rgt-std/invoice",
+    "rgt-std/persistence/fs",
     
-    # Tondi RPC Client (replaces Esplora client)
-    "bp-tondi-client",
+    # RGT Runtime
+    "rgt",
+    "rgt/cli",
     
-    # RGB Core
-    "rgb-core",
-    
-    # RGB Standard
-    "rgb-std",
-    "rgb-std/cli",
-    "rgb-std/invoice",
-    "rgb-std/persistence/fs",
-    
-    # RGB Runtime
-    "rgb",
-    "rgb/pstt",
-    "rgb/descriptors",
-    "rgb/cli",
-    
-    # RGB Interfaces (Standard RGB20/21/25)
-    "rgb-interfaces",
+    # RGT Interfaces (fungible and NFT)
+    "rgt-interfaces",
     
     # Sonare - currently disabled due to sonic dependency issues
     # "sonare",
@@ -62,42 +46,31 @@ members = [
 [workspace.package]
 authors = ["Dr Maxim Orlovsky <orlovsky@lnp-bp.org>", "Avato Labs"]
 edition = "2021"
-rust-version = "1.85.0"
+rust-version = "1.95"
 license = "Apache-2.0"
-repository = "https://github.com/AvatoLabs/RGB-X"
-homepage = "https://github.com/AvatoLabs/RGB-X"
 
 [workspace.dependencies]
 # External dependencies
 amplify = { version = "4.9.0", default-features = true }
-bech32 = "0.9.1"
-secp256k1 = { version = "0.30.0", features = ["global-context"] }
 sha2 = "0.10.8"
 blake3 = "1.5"
 indexmap = "2.9.0"
-futures = "0.3.31"
 chrono = "0.4.41"
 serde = { version = "1", features = ["derive"] }
-serde_with = "3.11"
 serde_json = "1.0"
 serde_yaml = "0.9.19"
 toml = "0.8.22"
-log = "0.4"
 paste = "1"
 baid64 = "0.4.2"
 binfile = "0.2.0"
 aora = ">=0.6.4"
 ascii-armor = "0.9.0"
 vesper-lang = "0.2.1"
-minreq = "2.11.0"
-reqwest = "0.12"
-tokio = "1"
 wasm-bindgen = "0.2"
 wasm-bindgen-test = "0.3"
 rand = "0.9.1"
 getrandom = "0.3"
 thiserror = "2.0"
-async-trait = "0.1"
 hex = { version = "0.4", features = ["serde"] }
 
 # Workspace internal dependencies - strict encoding/types
@@ -116,35 +89,21 @@ commit_verify_derive = { version = "0.12.0", path = "./client_side_validation/co
 single_use_seals = { version = "0.12.0", path = "./client_side_validation/single_use_seals" }
 client_side_validation = { version = "0.12.0", path = "./client_side_validation" }
 
-# Workspace internal dependencies - Tondi protocol
-bp-consensus = { version = "0.12.0", path = "./bp-core/consensus" }
-bp-dbc = { version = "0.12.0", path = "./bp-core/dbc" }
-bp-seals = { version = "0.12.0", path = "./bp-core/seals" }
-bp-core = { version = "0.12.0", path = "./bp-core" }
+# Tondi v10 wire types, finality verifier and native signing format
+tondi-vm = { path = "../Tondi/vm", version = "=1.23.0" }
+tondi-consensus-core = { path = "../Tondi/consensus/core", version = "=1.23.0" }
+tondi-wallet-pstt = { path = "../Tondi/wallet/pstt", version = "=1.23.0" }
 
-bp-invoice = { version = "0.12.0-rc.2", path = "./bp-std/invoice" }
-bp-derive = { version = "0.12.0-rc.3", path = "./bp-std/derive" }
-descriptors = { version = "0.12.0-rc.3", path = "./bp-std/descriptors" }
-pstt = { version = "0.12.0-rc.3", path = "./bp-std/pstt" }
-bp-std = { version = "0.12.0-rc.3", path = "./bp-std" }
+# Workspace internal dependencies - RGT
+rgt-core = { version = "0.12.0", path = "./rgt-core" }
+rgt-invoice = { version = "0.12.0-rc.3", path = "./rgt-std/invoice" }
+rgt-persist-fs = { version = "0.12.0-rc.3", path = "./rgt-std/persistence/fs" }
+rgt-std = { version = "0.12.0-rc.3", path = "./rgt-std" }
 
-bp-tondi = { version = "0.1.0", path = "./bp-tondi-client" }
+rgt-runtime = { version = "0.12.0-rc.3", path = "./rgt" }
 
-# Workspace internal dependencies - RGB
-rgb-core = { version = "0.12.0", path = "./rgb-core" }
-rgb-invoice = { version = "0.12.0-rc.3", path = "./rgb-std/invoice" }
-rgb-persist-fs = { version = "0.12.0-rc.3", path = "./rgb-std/persistence/fs" }
-rgb-std = { version = "0.12.0-rc.3", path = "./rgb-std" }
-
-rgb-pstt = { version = "0.12.0-rc.3", path = "./rgb/pstt" }
-rgb-descriptors = { version = "0.12.0-rc.3", path = "./rgb/descriptors" }
-rgb-runtime = { version = "0.12.0-rc.3", path = "./rgb" }
-
-# RGB Interfaces (RGB20/21/25 Standards)
-rgb-interfaces = { version = "0.12.0", path = "./rgb-interfaces" }
-
-# Workspace internal dependencies - Sonare
-sonare = { version = "0.12.0-alpha.1", path = "./sonare" }
+# RGT Interfaces (fungible and NFT)
+rgt-interfaces = { version = "0.12.0", path = "./rgt-interfaces" }
 
 # External dependencies that are not yet in workspace
 hypersonic = "0.12.0"
@@ -170,15 +129,9 @@ zk-aluvm = { path = "./zk-aluvm" }
 ultrasonic = { path = "./ultrasonic" }
 commit_verify = { path = "./client_side_validation/commit_verify" }
 single_use_seals = { path = "./client_side_validation/single_use_seals" }
-bp-consensus = { path = "./bp-core/consensus" }
-bp-dbc = { path = "./bp-core/dbc" }
-bp-seals = { path = "./bp-core/seals" }
-bp-core = { path = "./bp-core" }
-bp-invoice = { path = "./bp-std/invoice" }
-bp-std = { path = "./bp-std" }
-rgb-core = { path = "./rgb-core" }
-rgb-std = { path = "./rgb-std" }
-rgb-interfaces = { path = "./rgb-interfaces" }
+rgt-core = { path = "./rgt-core" }
+rgt-std = { path = "./rgt-std" }
+rgt-interfaces = { path = "./rgt-interfaces" }
 
 # Forked external crates with Tondi support
 sonic-callreq = { path = "./external-forks/sonic-callreq" }

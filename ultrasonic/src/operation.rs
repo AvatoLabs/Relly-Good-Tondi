@@ -528,26 +528,26 @@ mod test {
     #[test]
     fn opid_display() {
         let id = Opid::from_byte_array(blake3_hash(b"test"));
-        assert_eq!(format!("{id}"), "n4bQgYhMfWWaL_qgxVrQFaO~TxsrC4Is0V1sFbDwCgg");
-        assert_eq!(format!("{id:-}"), "usop:n4bQgYhMfWWaL_qgxVrQFaO~TxsrC4Is0V1sFbDwCgg");
+        assert_eq!(format!("{id}"), "4gbc4SPC~MblwGDjqOuSy5JleBxjQulLUjnfMkP4F2s");
+        assert_eq!(format!("{id:-}"), "usop:4gbc4SPC~MblwGDjqOuSy5JleBxjQulLUjnfMkP4F2s");
         assert_eq!(
             format!("{id:#}"),
-            "n4bQgYhMfWWaL_qgxVrQFaO~TxsrC4Is0V1sFbDwCgg#nova-impact-simon"
+            "4gbc4SPC~MblwGDjqOuSy5JleBxjQulLUjnfMkP4F2s#economy-charter-pigment"
         );
     }
 
     #[test]
     fn opid_from_str() {
         let id = Opid::from_byte_array(blake3_hash(b"test"));
-        assert_eq!(Opid::from_str("n4bQgYhMfWWaL_qgxVrQFaO~TxsrC4Is0V1sFbDwCgg").unwrap(), id);
-        assert_eq!(Opid::from_str("usop:n4bQgYhMfWWaL_qgxVrQFaO~TxsrC4Is0V1sFbDwCgg").unwrap(), id);
+        assert_eq!(Opid::from_str("4gbc4SPC~MblwGDjqOuSy5JleBxjQulLUjnfMkP4F2s").unwrap(), id);
+        assert_eq!(Opid::from_str("usop:4gbc4SPC~MblwGDjqOuSy5JleBxjQulLUjnfMkP4F2s").unwrap(), id);
         assert_eq!(
-            Opid::from_str("n4bQgYhMfWWaL_qgxVrQFaO~TxsrC4Is0V1sFbDwCgg#nova-impact-simon")
+            Opid::from_str("4gbc4SPC~MblwGDjqOuSy5JleBxjQulLUjnfMkP4F2s#economy-charter-pigment")
                 .unwrap(),
             id
         );
         assert_eq!(
-            Opid::from_str("usop:n4bQgYhMfWWaL_qgxVrQFaO~TxsrC4Is0V1sFbDwCgg#nova-impact-simon")
+            Opid::from_str("usop:4gbc4SPC~MblwGDjqOuSy5JleBxjQulLUjnfMkP4F2s#economy-charter-pigment")
                 .unwrap(),
             id
         );

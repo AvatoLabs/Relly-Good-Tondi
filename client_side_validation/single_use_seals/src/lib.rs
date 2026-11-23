@@ -99,8 +99,7 @@
 //!
 //! ## Sample implementation
 //!
-//! Examples of implementations can be found in the [`bp::seals`] module of
-//! `bp-core` crate.
+//! The RGT core crate implements Tondi Note seals in `rgt_core::note`.
 //!
 //! ## Further reading
 //!
@@ -111,7 +110,6 @@
 //!   and Proof-of-Publication. 1. Single-Use-Seal Definition.
 //!   <https://petertodd.org/2017/scalable-single-use-seal-asset-transfer>
 //!
-//! [`bp::seals`]: https://github.com/BP-WG/bp-core/tree/master/seals
 
 #[cfg(feature = "strict_encoding")]
 #[macro_use]
@@ -222,6 +220,7 @@ pub trait ClientSideWitness: Eq {
 /// witness and have just the published one. To use [`SealWitness`] type in such
 /// protocols, the [`SingleUseSeal`] must set its [`SingleUseSeal::CliWitness`]
 /// to [`NoClientWitness`] type.
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize), serde(bound = ""))]
 #[derive(Copy, Clone, Debug)]
 pub struct NoClientWitness<Seal: SingleUseSeal>(PhantomData<Seal>);
 
@@ -265,21 +264,18 @@ impl<Seal: SingleUseSeal> Default for NoClientWitness<Seal> {
 #[cfg(feature = "strict_encoding")]
 mod _strict_encoding_impls {
     use strict_encoding::{
-        DecodeError, StrictProduct, StrictTuple, StrictType, TypedRead, TypedWrite,
+        DecodeError, StrictType, TypeName, TypedRead, TypedWrite,
     };
 
     use super::*;
 
     impl<Seal: SingleUseSeal> StrictType for NoClientWitness<Seal> {
-        const STRICT_LIB_NAME: &'static str = LIB_NAME_SEALS;
-    }
-    impl<Seal: SingleUseSeal> StrictProduct for NoClientWitness<Seal> {}
-    impl<Seal: SingleUseSeal> StrictTuple for NoClientWitness<Seal> {
-        const FIELD_COUNT: u8 = 0;
+        const STRICT_LIB_NAME: &'static str = <()>::STRICT_LIB_NAME;
+        fn strict_name() -> Option<TypeName> { None }
     }
     impl<Seal: SingleUseSeal> StrictEncode for NoClientWitness<Seal> {
         fn strict_encode<W: TypedWrite>(&self, writer: W) -> std::io::Result<W> {
-            Ok(writer)
+            ().strict_encode(writer)
         }
     }
     impl<Seal: SingleUseSeal> StrictDecode for NoClientWitness<Seal> {

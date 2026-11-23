@@ -1,0 +1,24 @@
+[package]
+name = "rgt-persist-fs"
+version = "0.12.0-rc.3"
+authors = ["Dr Maxim Orlovsky <orlovsky@lnp-bp.org>"]
+description = "Filesystem persistence for RGT smart contracts"
+keywords = ["tondi", "rgt", "smart-contracts", "client-side-validation"]
+categories = ["algorithms", "cryptography", "science", "no-std"]
+readme = "README.md"
+license = "Apache-2.0"
+edition = "2021"
+rust-version = "1.85.0"
+exclude = [".github"]
+
+[dependencies]
+amplify.workspace = true
+strict_encoding.workspace = true
+sonic-persist-fs.workspace = true
+rgt-std = { workspace = true, features = ["binfile"] }
+aora.workspace = true
+
+[features]
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(coverage_nightly)'] }

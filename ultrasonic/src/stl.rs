@@ -32,9 +32,9 @@ use strict_types::{CompileError, TypeLib};
 
 use crate::{ContractId, Issue, Operation, Opid, LIB_NAME_ULTRASONIC};
 
-/// Strict types id for the library providing data types for RGB consensus.
+/// Strict types id for the library providing data types for RGT consensus.
 pub const LIB_ID_ULTRASONIC: &str =
-    "stl:otovXd5j-Gcwzd3y-NKdMUuW-dQNAwFS-5qzO12F-yK_evjY#druid-mozart-puzzle";
+    "stl:sNsQqAsW-YlDEZr3-bDH0e5_-57QSud4-Dp2sv~2-8w1ijac#iris-button-vatican";
 
 #[allow(clippy::result_large_err)]
 fn _usonic_stl() -> Result<TypeLib, CompileError> {
@@ -55,7 +55,7 @@ fn _usonic_stl() -> Result<TypeLib, CompileError> {
     .compile()
 }
 
-/// Generates a strict type library providing data types for RGB consensus.
+/// Generates a strict type library providing data types for RGT consensus.
 pub fn usonic_stl() -> TypeLib {
     _usonic_stl().expect("invalid strict type Ultrasonic library")
 }

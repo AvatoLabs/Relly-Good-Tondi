@@ -56,7 +56,7 @@ use crate::LIB_NAME_ULTRASONIC;
 /// represents a hash of (a commitment to) a single-use seal definition, and during the memory cell
 /// access the operation destroying that cell ("spending operation") needs to prove that it has
 /// properly closed that single-use seal over the commitment to the spending operation. This
-/// scenario is implemented in the RGB smart contract system.
+/// scenario is implemented in the RGT smart contract system.
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug, From)]
 #[derive(StrictType, StrictDumb, StrictEncode, StrictDecode)]
 #[strict_type(lib = LIB_NAME_ULTRASONIC)]

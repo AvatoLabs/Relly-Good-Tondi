@@ -1,0 +1,34 @@
+[package]
+name = "rgt-invoice"
+description = "Invoice Library for RGT smart contracts"
+version = "0.12.0-rc.3"
+keywords = ["tondi", "rgt", "smart-contracts"]
+categories = ["cryptography::cryptocurrencies"]
+authors = ["Dr Maxim Orlovsky <orlovsky@lnp-bp.org>"]
+rust-version = "1.85.0"
+edition = "2021"
+license = "Apache-2.0"
+
+[dependencies]
+amplify.workspace = true
+commit_verify.workspace = true
+strict_encoding.workspace = true
+baid64.workspace = true
+hypersonic.workspace = true
+sonic-callreq.workspace = true
+rgt-core.workspace = true
+serde = { workspace = true, optional = true }
+
+[features]
+default = ["std"]
+all = ["std", "uri", "serde"]
+
+std = ["amplify/std", "sonic-callreq/std"]
+uri = ["sonic-callreq/uri"]
+serde = ["dep:serde", "sonic-callreq/serde", "rgt-core/serde"]
+
+[package.metadata.docs.rs]
+features = ["all"]
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(coverage_nightly)'] }

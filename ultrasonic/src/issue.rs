@@ -21,8 +21,6 @@
 // or implied. See the License for the specific language governing permissions and limitations under
 // the License.
 
-// Legacy variants in Consensus enum are deprecated but kept for backward compatibility
-#![allow(deprecated)]
 
 use core::fmt::Debug;
 use core::str::FromStr;
@@ -124,45 +122,21 @@ impl Issue {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize), serde(rename_all = "camelCase"))]
 #[repr(u8)]
 pub enum Consensus {
-    /// No consensus is used.
-    ///
-    /// This means the contract data are not final and depend on the external consensus between
-    /// the contract parties.
+    /// Tondi v10 mainnet Note ledger.
     #[strict_type(dumb)]
-    None = 0,
-
-    /// Tondi BlockDAG + PoW consensus (primary for this workspace).
     Tondi = 0x30,
-
-    /// Tondi testnet consensus.
+    /// Tondi v10 test network Note ledger.
+    #[display("tondi-testnet")]
     TondiTestnet = 0x31,
-
-    /// Prime consensus.
-    Prime = 0x20,
-
-    // Legacy variants kept for backward compatibility with external crates.
-    // These should not be used for new Tondi contracts.
-    /// Deprecated proof-of-work chain slot kept for external crate compatibility.
-    #[deprecated(note = "Use Tondi consensus instead")]
-    LegacyPow = 0x10,
-
-    /// Deprecated federated chain slot kept for external crate compatibility.
-    #[deprecated(note = "Use Tondi consensus instead")]
-    LegacyFederation = 0x11,
 }
 
 impl FromStr for Consensus {
     type Err = String;
 
-    #[allow(deprecated)]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "none" => Ok(Consensus::None),
             "tondi" => Ok(Consensus::Tondi),
-            "tondi-testnet" | "tondi_testnet" => Ok(Consensus::TondiTestnet),
-            "prime" => Ok(Consensus::Prime),
-            "legacy-pow" | "legacy_pow" => Ok(Consensus::LegacyPow),
-            "legacy-federation" | "legacy_federation" => Ok(Consensus::LegacyFederation),
+            "tondi-testnet" => Ok(Consensus::TondiTestnet),
             _ => Err(s.to_owned()),
         }
     }
@@ -182,7 +156,7 @@ pub struct ContractMeta {
     pub timestamp: i64,
     /// A set of feature flags.
     ///
-    /// RGB-I-0 consensus has no flags, which is enforced with [`ReservedBytes`] structure.
+    /// RGT-I-0 consensus has no flags, which is enforced with [`ReservedBytes`] structure.
     pub features: ReservedBytes<6>,
     /// A name of the contract.
     pub name: ContractName,
@@ -286,13 +260,26 @@ mod test {
     }
 
     #[test]
+    fn only_note_networks_are_recognized() {
+        for tag in [0, 0x10, 0x11, 0x20] {
+            assert!(Consensus::try_from(tag as u8).is_err());
+        }
+        for name in ["none", "prime", "legacy-pow", "legacy-federation", "tondi_testnet"] {
+            assert!(name.parse::<Consensus>().is_err());
+        }
+        for network in [Consensus::Tondi, Consensus::TondiTestnet] {
+            assert_eq!(network.to_string().parse(), Ok(network));
+        }
+    }
+
+    #[test]
     fn contract_id_display() {
         let id = ContractId::from_byte_array(blake3_hash(b"test"));
-        assert_eq!(format!("{id}"), "contract:n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg");
-        assert_eq!(format!("{id:-}"), "n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg");
+        assert_eq!(format!("{id}"), "contract:4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s");
+        assert_eq!(format!("{id:-}"), "4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s");
         assert_eq!(
             format!("{id:#}"),
-            "contract:n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg#fractal-fashion-capsule"
+            "contract:4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s#sonic-market-monster"
         );
     }
 
@@ -300,24 +287,24 @@ mod test {
     fn contract_id_from_str() {
         let id = ContractId::from_byte_array(blake3_hash(b"test"));
         assert_eq!(
-            ContractId::from_str("contract:n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg")
+            ContractId::from_str("contract:4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s")
                 .unwrap(),
             id
         );
         assert_eq!(
-            ContractId::from_str("n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg").unwrap(),
+            ContractId::from_str("4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s").unwrap(),
             id
         );
         assert_eq!(
             ContractId::from_str(
-                "n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg#fractal-fashion-capsule"
+                "4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s#sonic-market-monster"
             )
             .unwrap(),
             id
         );
         assert_eq!(
             ContractId::from_str(
-                "contract:n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg#fractal-fashion-capsule"
+                "contract:4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s#sonic-market-monster"
             )
             .unwrap(),
             id

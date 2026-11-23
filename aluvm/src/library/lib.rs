@@ -192,14 +192,14 @@ mod test {
         let id = Lib::strict_dumb().lib_id();
         assert_eq!(
             format!("{id}"),
-            "alu:uZkzX1J9-i5EvGTf-J1TB79p-OBvKq5x-1U2n4qd-8Nso3Ag#reunion-cable-tractor"
+            "alu:RMcuSs02-3G_uKE5-I2J_lbp-r_iw3hX-UOtkbt0-gCagc54#alfred-mono-whiskey"
         );
         assert_eq!(
             format!("{id:-}"),
-            "uZkzX1J9-i5EvGTf-J1TB79p-OBvKq5x-1U2n4qd-8Nso3Ag#reunion-cable-tractor"
+            "RMcuSs02-3G_uKE5-I2J_lbp-r_iw3hX-UOtkbt0-gCagc54#alfred-mono-whiskey"
         );
-        assert_eq!(format!("{id:#}"), "alu:uZkzX1J9-i5EvGTf-J1TB79p-OBvKq5x-1U2n4qd-8Nso3Ag");
-        assert_eq!(format!("{id:-#}"), "uZkzX1J9-i5EvGTf-J1TB79p-OBvKq5x-1U2n4qd-8Nso3Ag");
+        assert_eq!(format!("{id:#}"), "alu:RMcuSs02-3G_uKE5-I2J_lbp-r_iw3hX-UOtkbt0-gCagc54");
+        assert_eq!(format!("{id:-#}"), "RMcuSs02-3G_uKE5-I2J_lbp-r_iw3hX-UOtkbt0-gCagc54");
     }
 
     #[test]
@@ -208,19 +208,19 @@ mod test {
         assert_eq!(
             id,
             LibId::from_str(
-                "alu:uZkzX1J9-i5EvGTf-J1TB79p-OBvKq5x-1U2n4qd-8Nso3Ag#reunion-cable-tractor"
+                "alu:RMcuSs02-3G_uKE5-I2J_lbp-r_iw3hX-UOtkbt0-gCagc54#alfred-mono-whiskey"
             )
             .unwrap()
         );
-        assert_eq!(id, LibId::from_str("alu:uZkzX1J9i5EvGTfJ1TB79pOBvKq5x1U2n4qd8Nso3Ag").unwrap());
+        assert_eq!(id, LibId::from_str("alu:RMcuSs023G_uKE5I2J_lbpr_iw3hXUOtkbt0gCagc54").unwrap());
         assert_eq!(
             id,
             LibId::from_str(
-                "alu:uZkzX1J9i5EvGTfJ1TB79pOBvKq5x1U2n4qd8Nso3Ag#reunion-cable-tractor"
+                "alu:RMcuSs023G_uKE5I2J_lbpr_iw3hXUOtkbt0gCagc54#alfred-mono-whiskey"
             )
             .unwrap()
         );
 
-        assert_eq!(id, LibId::from_str("uZkzX1J9i5EvGTfJ1TB79pOBvKq5x1U2n4qd8Nso3Ag").unwrap());
+        assert_eq!(id, LibId::from_str("RMcuSs023G_uKE5I2J_lbpr_iw3hXUOtkbt0gCagc54").unwrap());
     }
 }

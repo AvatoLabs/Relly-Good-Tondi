@@ -27,7 +27,7 @@ use strict_types::TypeLib;
 use crate::{fe256, LIB_NAME_FINITE_FIELD};
 
 /// Strict type id for the lib-old providing data types from this crate.
-pub const LIB_ID_FINITE_FIELD: &str = "stl:Nm0yhN4V-rj3RTrE-tXIS14e-JV1OFTx-zPNhRZU-54QW0tg#report-canal-convert";
+pub const LIB_ID_FINITE_FIELD: &str = "stl:Y2gCtB8d-en6R1R4-kDobq4M-7cI0sH6-OiIcJEc-KXk2WKU#congo-wedding-pioneer";
 
 #[allow(clippy::result_large_err)]
 fn _finite_field_stl() -> Result<TypeLib, CompileError> {

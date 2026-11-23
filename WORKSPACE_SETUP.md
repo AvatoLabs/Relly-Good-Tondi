@@ -1,44 +1,39 @@
-# RGB on Tondi Workspace Setup
+# Workspace setup
 
-This workspace is maintained as a single Tondi-native Cargo tree. All internal crates are wired by local paths through the root `Cargo.toml`, and the production RGB runtime is expected to use Tondi RPC, PSTT, and P2MR commitment publication.
+The root lockfile and Rust toolchain pin the wallet build. Clone Tondi beside this checkout, keeping the directory name `Tondi`. The v10 workspace crates require Rust 1.95 and Python 3 for Telegraph code generation. The node also requires the native toolchain documented in the sibling repository. The two-hop cold recovery test passed against parent revision `2960f9bb`. The reference proof samples use `4e8663a4`. [Tested Tondi v10 source](https://github.com/Tondi-Foundation/Tondi/tree/2960f9bb8d2b42d63ca5d79a5ac44191511af4a8)
 
-## Active Layout
-
-- Core encoding and VM crates: `strict-encoding`, `strict-types`, `aluvm`, `zk-aluvm`, `ultrasonic`.
-- Client-side validation crates: `client_side_validation`, `commit_verify`, `single_use_seals`.
-- Tondi protocol support crates: `bp-core`, `bp-std`, and their subcrates, adapted for Tondi semantics.
-- Tondi RPC integration: `bp-tondi-client`.
-- RGB contract stack: `rgb-core`, `rgb-std`, `rgb`, `rgb-interfaces`.
-
-## Build
-
-```bash
-cargo check --workspace
-cargo build --workspace
-cargo test --workspace
+```sh
+cargo +1.95.0 build --bin rgt
+cargo +1.95.0 test --workspace --all-targets --all-features
+python3 scripts/v10_transfer_local.py target/v10-run
 ```
 
-For the production RGB path:
+The runner builds the sibling `tondid` by default. Set `TONDID` to an already built matching executable to reuse it. The output directory must be new. See the [wallet workflow](QUICK_START.md) for invoice and package details.
 
-```bash
-cargo build --bin rgb
-cargo check -p rgb-wallet --features resolver-tondi
-./test_workflow_simple.sh
+Build the wallet container from the repository root using the sibling v10 checkout as a named build context.
+
+```sh
+docker buildx build --build-context tondi=../Tondi -f rgt/Dockerfile .
 ```
 
-## Devnet Verification
+## Workspace conventions
 
-Run a Tondi devnet node with RPC and the UTXO index enabled, then run:
+Use local path dependencies for internal crates. Keep runtime workflow documentation and scripts in English. Exercise the local v10 transfer before merging wallet, resolver or publication changes. Keep generated node state and ad hoc measurement outputs outside version control.
 
-```bash
-TONDI_DEVNET_RPC=127.0.0.1:26310 \
-TONDI_DEVNET_ALLOW_UNSYNCED=1 \
-bash scripts/devnet_p2mr_rgb_verify.sh
+## Recursive proof
+
+Use RISC Zero SDK and local `r0vm` 3.1.0. The pinned guest was built with the RISC Zero Rust toolchain `rustc 1.97.0-dev (e638c6cfe)` and the guest lockfile. The guest build uses Bash and Python 3. It remaps source paths and pins Cargo’s path-dependent Rust crate disambiguators for the locked compilation units. A separate checkout reproduced the same ELF byte for byte. Set `RGT_RISC0_TOOLCHAIN` to its installation prefix if it is not registered as the `risc0` rustup toolchain.
+
+```sh
+scripts/build_rgt_guest.sh
+cargo build --locked -p rgt-proof
+guest=target/rgt-guest/riscv32im-risc0-zkvm-elf/release/rgt-step
+test "$(target/debug/rgt-proof image "$guest")" = "$(cat rgt/src/recursive-image-id)"
+python3 scripts/prove_rgt_deliveries.py target/rgt-run --program "$guest" --prover "$(command -v r0vm)"
 ```
 
-## Workspace Rules
+The local prover takes private witnesses. The second delivery reuses the first succinct receipt. The verifier only needs `rgt-proof verify`, the recipient package and independent invoice and chain terms. The public image identifier is pinned in the verifier binary.
 
-- Use local workspace dependencies for internal crates.
-- Keep workflow docs and scripts English-only.
-- Keep RGB wallet publication paths P2MR-first.
-- Do not commit generated node data or ad hoc workflow outputs.
+`rgt-proof prove` and `rgt-proof fold` accept `--work-dir DIR` for long CPU runs. Choose a private local directory. It holds private witness traces for one exact execution and a verified receipt for each completed prefix. Running the same command again reopens those traces and verifies the saved receipts before continuing. The directory can be deleted once the final receipt verifies.
+
+To exercise compact on-chain recovery, pass `--compact-program "$guest" --prover "$(command -v r0vm)"` to `scripts/v10_transfer_local.py` with a new output directory. It pays Bob using the full-history profile, exports his proven state, sends a compact encrypted capsule to Carol and folds Carol’s recovered transfer so she can pay the third recipient. The private test node pauses while proofs are produced.

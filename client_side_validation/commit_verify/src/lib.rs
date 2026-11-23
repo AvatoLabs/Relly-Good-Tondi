@@ -55,7 +55,6 @@ extern crate serde;
 #[cfg(feature = "derive")]
 pub use commit_encoding_derive::CommitEncode;
 
-mod annexret;
 mod commit;
 mod conceal;
 mod convolve;
@@ -70,25 +69,16 @@ mod digest;
 #[cfg(feature = "vesper")]
 pub mod vesper;
 
-pub use annexret::{
-    create_annex_with_commitment, extract_commitment_from_annex, verify_annex_commitment,
-    AnnexRetError, AnnexRetProtocol, RGB_COMMITMENT_LEN, RGB_COMMITMENT_TLV_TYPE,
-    TAPROOT_ANNEX_PREFIX,
-};
 pub use commit::{CommitVerify, TryCommitVerify, VerifyError};
 pub use conceal::Conceal;
 pub use convolve::{ConvolveCommit, ConvolveCommitProof, ConvolveVerifyError};
-pub use digest::{DefaultHasher, Digest, DigestExt, TondiBlake3, TondiBlake3_20};
-// Re-export sha2 types for backward compatibility with external crates (e.g., sonic-api)
-// These will be deprecated once all dependent crates are updated to use TondiBlake3.
+pub use digest::{DigestExt, TondiBlake3};
 pub use embed::{EmbedCommitProof, EmbedCommitVerify, EmbedVerifyError, VerifyEq};
 pub use id::{
     CommitColType, CommitEncode, CommitEngine, CommitId, CommitLayout, CommitStep, CommitmentId,
     CommitmentLayout, StrictHash,
 };
 pub use merkle::{MerkleBuoy, MerkleHash, MerkleLeaves, MerkleNode, NodeBranching};
-pub use ripemd::Ripemd160;
-pub use sha2::{Sha256, Sha512};
 
 /// Name of the CommitVerify strict type library.
 pub const LIB_NAME_COMMIT_VERIFY: &str = "CommitVerify";
@@ -155,7 +145,7 @@ mod _reserved {
             let reserved = reader.read_tuple(|r| r.read_field().map(Self))?;
             if reserved != ReservedBytes::<LEN, VAL>::default() {
                 Err(DecodeError::DataIntegrityError(format!(
-                    "unsupported reserved byte value indicating a future RGB version. Please \
+                    "unsupported reserved byte value indicating a future RGT version. Please \
                      update your software, or, if the problem persists, contact your vendor \
                      providing the following version information: {reserved}"
                 )))

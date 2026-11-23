@@ -1,9 +1,8 @@
 # Client-side Validation for Tondi
 
 This workspace subtree contains the generic client-side validation primitives
-used by RGB-on-Tondi. The crates here define deterministic commitments,
-single-use seal traits, and the validation glue required by contract
-consignments.
+used by RGT. The crates here define deterministic commitments,
+single-use seal traits, and the verification logic for private transfer histories.
 
 ## Components
 
@@ -13,8 +12,8 @@ flowchart TD
     csv --> seals["single_use_seals"]
     commit --> ids["Commitment IDs"]
     commit --> merkle["Merkle proofs"]
-    seals --> p2mr["P2MR seal witnesses"]
-    p2mr --> tondi["Tondi L1 publication"]
+    seals --> note["Note seal witnesses"]
+    note --> tondi["Tondi L1 publication"]
 ```
 
 - `commit_verify` provides commitment identifiers, multi-message commitments,
@@ -25,9 +24,7 @@ flowchart TD
 
 ## Production Position
 
-RGB-on-Tondi uses this layer with Tondi-native publication and P2MR seal
-witnesses. The runtime and wallet code should not route production transfers
-through legacy host schemes or external chain resolvers.
+RGT closes Note seals with signed Telegraph envelopes and verifies the matching checkpoint evidence.
 
 ## Usage
 

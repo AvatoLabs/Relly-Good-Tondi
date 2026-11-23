@@ -1,6 +1,6 @@
 # Strict Encoding for Tondi
 
-Deterministic binary serialization for RGB-on-Tondi client-side validation.
+Deterministic binary serialization for RGT client-side validation.
 
 This crate provides the `StrictEncode` and `StrictDecode` traits used by Tondi
 contract state, seals, proofs, invoices, and transport payloads. The encoding is
@@ -15,19 +15,19 @@ flowchart LR
     proof["Proof data"] --> strict
     invoice["Invoices"] --> strict
     strict --> commit["Commitment IDs"]
-    strict --> transport["Consignment transport"]
+    strict --> transport["Private transfer history"]
 ```
 
 ## Usage
 
-Add the local workspace crate through the RGB-on-Tondi workspace dependency
+Add the local workspace crate through the RGT workspace dependency
 table.
 
 ```toml
 strict_encoding = { workspace = true }
 ```
 
-Types that cross consensus, storage, or consignment boundaries should derive
+Types that cross consensus, storage, or wallet transport boundaries should derive
 both traits:
 
 ```rust

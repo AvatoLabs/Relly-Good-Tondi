@@ -57,10 +57,8 @@
 macro_rules! zk_aluasm {
     ($( $tt:tt )+) => {{
         use $crate::instr;
-        #[cfg(not(feature = "std"))]
-        use alloc::vec::Vec;
 
-        let mut code: Vec<$crate::gfa::Instr<$crate::alu::LibId>> = Default::default();
+        let mut code: $crate::AssemblerVec<$crate::gfa::Instr<$crate::alu::LibId>> = Default::default();
         #[allow(unreachable_code)] {
             $crate::alu::aluasm_inner! { code => $( $tt )+ }
         }

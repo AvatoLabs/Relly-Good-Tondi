@@ -1,0 +1,25 @@
+[workspace]
+[package]
+name="rgt-step"
+version="0.1.0"
+edition="2021"
+publish=false
+[dependencies]
+rgt-lineage={path="../../rgt-lineage"}
+risc0-zkvm={version="=3.1.0",default-features=false,features=["std"]}
+serde_json="1"
+getrandom="0.3"
+[patch.crates-io]
+
+# Ensure all crates use local versions
+strict_encoding = { path = "../../strict-encoding/rust" }
+strict_types = { path = "../../strict-types" }
+aluvm = { path = "../../aluvm" }
+zk-aluvm = { path = "../../zk-aluvm" }
+ultrasonic = { path = "../../ultrasonic" }
+commit_verify = { path = "../../client_side_validation/commit_verify" }
+single_use_seals = { path = "../../client_side_validation/single_use_seals" }
+rgt-core = { path = "../../rgt-core" }
+rgt-std = { path = "../../rgt-std" }
+rgt-interfaces = { path = "../../rgt-interfaces" }
+

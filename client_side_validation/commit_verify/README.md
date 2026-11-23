@@ -1,7 +1,7 @@
 # Commit Verify for Tondi
 
 `commit_verify` provides the deterministic commitment primitives used by
-RGB-on-Tondi contracts and seal witnesses.
+RGT contracts and seal witnesses.
 
 ## Responsibilities
 
@@ -10,8 +10,8 @@ flowchart LR
     message["Message set"] --> mpc["Multi-message commitment"]
     mpc --> cid["Commitment ID"]
     state["Contract state"] --> cid
-    cid --> p2mr["P2MR witness"]
-    p2mr --> verify["Client-side verification"]
+    cid --> note["Note witness"]
+    note --> verify["Client-side verification"]
 ```
 
 The crate owns:

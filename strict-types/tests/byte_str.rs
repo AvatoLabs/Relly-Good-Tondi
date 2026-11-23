@@ -44,7 +44,7 @@ typelib Test
 
 -- no dependencies
 
-@mnemonic(pasta-tomato-manual)
+@mnemonic(reserve-front-visitor)
 data ByteStr           : [Byte]
 
 "

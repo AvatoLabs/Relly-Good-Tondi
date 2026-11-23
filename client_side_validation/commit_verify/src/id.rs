@@ -83,7 +83,6 @@ pub enum CommitStep {
 /// A helper engine used in computing commitment ids.
 ///
 /// Uses TondiBlake3 (BLAKE3 with domain separation) for Tondi L1 by default.
-/// Can be configured to use SHA256 for Tondi compatibility.
 #[derive(Clone, Debug)]
 pub struct CommitEngine {
     finished: bool,
@@ -342,15 +341,13 @@ impl Display for CommitLayout {
 /// identifier of the underlying data.
 ///
 /// For Tondi L1, uses TondiBlake3 (BLAKE3 with domain separation).
-/// For Tondi compatibility, uses SHA256 with BIP-340 tagging.
 ///
 /// The type must be constructible from a 32-byte array, which is the output
-/// of both BLAKE3 and SHA256 hash functions.
+/// of the domain-separated BLAKE3 hash.
 pub trait CommitmentId: Copy + Ord + From<[u8; 32]> + StrictType {
     /// A tag string used in initializing the hasher.
     ///
     /// For Tondi: Used as domain separation context with BLAKE3 derive_key.
-    /// For Tondi: Used as BIP-340 style tagged hash.
     const TAG: &'static str;
 }
 

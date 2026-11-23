@@ -345,7 +345,7 @@ mod test {
 
     #[test]
     fn api() {
-        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RGB20/10@at:\
+        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RgtFungible/10@at:\
                  5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA/";
         let req = CallRequest::<ContractId, AuthToken>::from_str(s).unwrap();
         assert_eq!(s, req.to_string());
@@ -356,7 +356,7 @@ mod test {
         );
         assert_eq!(req.data, Some(StrictVal::num(10u64)));
         assert_eq!(req.auth, AuthToken::from_str("at:5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA").unwrap());
-        assert_eq!(req.api, Some(tn!("RGB20")));
+        assert_eq!(req.api, Some(tn!("RgtFungible")));
         assert_eq!(req.call, None);
         assert_eq!(req.lock, None);
         assert_eq!(req.expiry, None);
@@ -366,7 +366,7 @@ mod test {
 
     #[test]
     fn method() {
-        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RGB20/transfer/10@at:\
+        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RgtFungible/transfer/10@at:\
                  5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA/";
         let req = CallRequest::<ContractId, AuthToken>::from_str(s).unwrap();
         assert_eq!(s, req.to_string());
@@ -377,7 +377,7 @@ mod test {
         );
         assert_eq!(req.data, Some(StrictVal::num(10u64)));
         assert_eq!(req.auth, AuthToken::from_str("at:5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA").unwrap());
-        assert_eq!(req.api, Some(tn!("RGB20")));
+        assert_eq!(req.api, Some(tn!("RgtFungible")));
         assert_eq!(req.call, Some(CallState::new("transfer")));
         assert_eq!(req.lock, None);
         assert_eq!(req.expiry, None);
@@ -387,7 +387,7 @@ mod test {
 
     #[test]
     fn state() {
-        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RGB20/transfer/amount/10@at:\
+        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RgtFungible/transfer/amount/10@at:\
                  5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA/";
         let req = CallRequest::<ContractId, AuthToken>::from_str(s).unwrap();
         assert_eq!(s, req.to_string());
@@ -398,7 +398,7 @@ mod test {
         );
         assert_eq!(req.data, Some(StrictVal::num(10u64)));
         assert_eq!(req.auth, AuthToken::from_str("at:5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA").unwrap());
-        assert_eq!(req.api, Some(tn!("RGB20")));
+        assert_eq!(req.api, Some(tn!("RgtFungible")));
         assert_eq!(req.call, Some(CallState::with("transfer", "amount")));
         assert_eq!(req.lock, None);
         assert_eq!(req.expiry, None);
@@ -408,7 +408,7 @@ mod test {
 
     #[test]
     fn lock() {
-        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RGB20/transfer/amount/10@at:\
+        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RgtFungible/transfer/amount/10@at:\
                  5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA/?lock=A64CDrfmG483";
         let req = CallRequest::<ContractId, AuthToken>::from_str(s).unwrap();
         assert_eq!(s, req.to_string());
@@ -419,7 +419,7 @@ mod test {
         );
         assert_eq!(req.data, Some(StrictVal::num(10u64)));
         assert_eq!(req.auth, AuthToken::from_str("at:5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA").unwrap());
-        assert_eq!(req.api, Some(tn!("RGB20")));
+        assert_eq!(req.api, Some(tn!("RgtFungible")));
         assert_eq!(req.call, Some(CallState::with("transfer", "amount")));
         assert_eq!(req.lock, Some(TinyBlob::from_checked(vec![3, 174, 2, 14, 183, 230, 27, 143, 55])));
         assert_eq!(req.expiry, None);
@@ -429,7 +429,7 @@ mod test {
 
     #[test]
     fn expiry() {
-        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RGB20/transfer/amount/10@at:\
+        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RgtFungible/transfer/amount/10@at:\
                  5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA/?expiry=2021-05-20T08:32:48+00:00";
         let req = CallRequest::<ContractId, AuthToken>::from_str(s).unwrap();
         assert_eq!(s, req.to_string());
@@ -440,7 +440,7 @@ mod test {
         );
         assert_eq!(req.data, Some(StrictVal::num(10u64)));
         assert_eq!(req.auth, AuthToken::from_str("at:5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA").unwrap());
-        assert_eq!(req.api, Some(tn!("RGB20")));
+        assert_eq!(req.api, Some(tn!("RgtFungible")));
         assert_eq!(req.call, Some(CallState::with("transfer", "amount")));
         assert_eq!(req.lock, None);
         assert_eq!(req.expiry, Some(Utc.with_ymd_and_hms(2021, 5, 20, 8, 32, 48).unwrap()));
@@ -450,7 +450,7 @@ mod test {
 
     #[test]
     fn endpoints() {
-        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RGB20/transfer/amount/10@at:\
+        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RgtFungible/transfer/amount/10@at:\
              5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA/?\
              endpoints=http://127.0.0.1:8080,\
              https+json-rpc://127.0.0.1:8081,\
@@ -465,7 +465,7 @@ mod test {
         );
         assert_eq!(req.data, Some(StrictVal::num(10u64)));
         assert_eq!(req.auth, AuthToken::from_str("at:5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA").unwrap());
-        assert_eq!(req.api, Some(tn!("RGB20")));
+        assert_eq!(req.api, Some(tn!("RgtFungible")));
         assert_eq!(req.call, Some(CallState::with("transfer", "amount")));
         assert_eq!(req.lock, None);
         assert_eq!(req.expiry, None);
@@ -482,7 +482,7 @@ mod test {
         assert!(req.unknown_query.is_empty());
 
         let req = CallRequest::<ContractId, AuthToken>::from_str(
-            "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RGB20/transfer/amount/10@at:\
+            "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RgtFungible/transfer/amount/10@at:\
              5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA/?\
              endpoints=http://127.0.0.1:8080,\
              https+json-rpc://127.0.0.1:8081&\
@@ -498,7 +498,7 @@ mod test {
         );
         assert_eq!(req.data, Some(StrictVal::num(10u64)));
         assert_eq!(req.auth, AuthToken::from_str("at:5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA").unwrap());
-        assert_eq!(req.api, Some(tn!("RGB20")));
+        assert_eq!(req.api, Some(tn!("RgtFungible")));
         assert_eq!(req.call, Some(CallState::with("transfer", "amount")));
         assert_eq!(req.lock, None);
         assert_eq!(req.expiry, None);
@@ -517,7 +517,7 @@ mod test {
 
     #[test]
     fn unknown_query() {
-        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RGB20/transfer/amount/10@at:\
+        let s = "contract:tb@qKpMlzOe-Imn6ysZ-a8JjG2p-WHWvaFm-BWMiPi3-_LvnfRw/RgtFungible/transfer/amount/10@at:\
                  5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA/?sats=40&bull=shit&other=x";
         let req = CallRequest::<ContractId, AuthToken>::from_str(s).unwrap();
         assert_eq!(s, req.to_string());
@@ -528,7 +528,7 @@ mod test {
         );
         assert_eq!(req.data, Some(StrictVal::num(10u64)));
         assert_eq!(req.auth, AuthToken::from_str("at:5WIb5EMY-RCLbO3Wq-hGdddRP4-IeCQzP1y-S5H_UKzd-ViYmlA").unwrap());
-        assert_eq!(req.api, Some(tn!("RGB20")));
+        assert_eq!(req.api, Some(tn!("RgtFungible")));
         assert_eq!(req.call, Some(CallState::with("transfer", "amount")));
         assert_eq!(req.lock, None);
         assert_eq!(req.expiry, None);

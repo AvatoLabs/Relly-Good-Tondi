@@ -1,0 +1,61 @@
+[package]
+name = "rgt-core"
+version = "0.12.0"
+authors = ["Dr Maxim Orlovsky <orlovsky@lnp-bp.org>"]
+description = "RGT Core Library: confidential client-side smart contracts for Tondi"
+keywords = ["tondi", "rgt", "smart-contracts"]
+categories = ["cryptography::cryptocurrencies"]
+readme = "README.md"
+license = "Apache-2.0"
+edition = "2021"
+rust-version = "1.81.0" # Due to need for `Error` trait in `core`
+exclude = [".github"]
+
+[lib]
+name = "rgt_core"
+crate-type = ["cdylib", "rlib", "staticlib"] # We need this for WASM
+
+[dependencies]
+strict_types = { workspace = true, optional = true }
+anyhow = "1"
+tondi-vm.workspace = true
+amplify = { workspace = true, features = ["alloc"] }
+strict_encoding = { workspace = true }
+commit_verify = { workspace = true }
+single_use_seals = { workspace = true, features = ["strict_encoding"] }
+ultrasonic = { workspace = true }
+serde = { workspace = true, optional = true }
+
+[dev-dependencies]
+secp256k1 = { version = "0.29", features = ["global-context"] }
+
+[features]
+default = ["std"]
+all = ["std", "serde", "stl"]
+
+std = []
+stl = ["dep:strict_types"]
+
+
+serde = [
+    "dep:serde",
+    "amplify/serde",
+    "ultrasonic/serde",
+    "commit_verify/serde",
+    "single_use_seals/serde"
+]
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2"
+rand = { version = "0.9.1", optional = true }
+getrandom = { version = "0.3", features = ["wasm_js"] }
+getrandom2 = { package = "getrandom", version = "0.2", features = ["js"] }
+
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+wasm-bindgen-test = "0.3"
+
+[package.metadata.docs.rs]
+features = ["all"]
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(coverage_nightly)'] }

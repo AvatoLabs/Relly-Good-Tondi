@@ -245,11 +245,11 @@ mod test {
             "name [Unicode ^ ..0xff]
                        , option U8?
                        , precision \
-             semid:3KnxzApb-9~6dpmO-YsJf16I-zNiMxSh-sNC3zIL-q~uHyeo#manila-compare-person
+             semid:u8KwuCtB-clOPXV~-RIuarDj-RB1BQ_4-fu~DS28-zX3CBWo#field-stereo-vocal
                        , data [Byte ^ ..0xff]
                        , list [U16]
                        , tuple \
-             semid:61l54MmE-DY1FQ1b-jjkquKp-5UOyhe0-sBSjtr~-VPzs4fk#cabinet-vampire-change"
+             semid:B0SpWQKU-VNosefu-t97qNIN-asn8YGd-U9lBSeX-TAhwT7A#swim-deliver-stage"
         );
         let sys = SystemBuilder::new().import(lib).unwrap().finalize().unwrap();
         eprintln!("{}", Ty::<SemId>::Primitive(Primitive::BYTE).is_byte());

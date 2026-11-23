@@ -1,0 +1,27 @@
+[package]
+name = "rgtx"
+description = "RGT command-line toolbox utility"
+version = "0.12.0-rc.3"
+keywords = ["tondi", "rgt", "smart-contracts"]
+categories = ["cryptography::cryptocurrencies"]
+authors = ["Dr Maxim Orlovsky <orlovsky@lnp-bp.org>"]
+rust-version = "1.85.0"
+edition = "2021"
+license = "Apache-2.0"
+readme = "../README.md"
+
+[dependencies]
+amplify.workspace = true
+strict_encoding.workspace = true
+hypersonic.workspace = true
+sonix.workspace = true
+rgt-std = { workspace = true, features = ["binfile", "serde"] }
+rgt-persist-fs.workspace = true
+binfile.workspace = true
+serde.workspace = true
+serde_yaml = "0.9.34"
+anyhow = "1.0.93"
+clap = { version = "4.5.21", features = ["derive", "env"] }
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(coverage_nightly)'] }

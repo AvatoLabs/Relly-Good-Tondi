@@ -1,0 +1,48 @@
+{-
+  Id: stl:eJWrHKTv-VjUk7QV-dQXLGjg-DmosJZX-4xIz4Mc-zzFeqPo#elite-detect-complex
+  Name: RGTContract
+  Version: 0.12.0
+  Collection of the standard RGT smart contract interface
+  Author: Dr Maxim Orlovsky <orlovsky@ubideco.org>
+  Copyright (C) 2019-2025 RGB Consortium members & contributors.
+                          All rights reserved.
+  License: Apache-2.0
+-}
+
+@context
+typelib RGTContract
+
+import RgtTondiV10#puma-parent-lunar
+  use NoteSeal#observe-info-hamlet
+  use NoteTxid#micro-marion-tribal
+
+import Std#sister-triton-cricket
+  use AlphaNum#strong-iron-travel
+  use Alpha#vacuum-serpent-mambo
+  use AsciiPrintable#valid-house-fame
+
+
+@mnemonic(fantasy-labor-truck)
+data Amount            : U64
+
+@mnemonic(edition-congo-snake)
+data AssetName         : Std.AsciiPrintable, [Std.AsciiPrintable ^ ..0x27]
+
+@mnemonic(split-vampire-bundle)
+data Details           : Std.AsciiPrintable, [Std.AsciiPrintable ^ ..0xfe]
+
+@mnemonic(evident-archer-slang)
+data Precision         : indivisible | deci | centi | milli
+                       | deciMilli | centiMilli | micro | deciMicro
+                       | centiMicro | nano | deciNano | centiNano
+                       | pico | deciPico | centiPico | femto
+                       | deciFemto | centiFemto | atto
+
+
+@mnemonic(alarm-process-vanilla)
+data ProofOfReserves   : note RgtTondiV10.NoteSeal, proof [Byte]
+
+@mnemonic(alfred-octavia-nelson)
+data Ticker            : Std.Alpha, [Std.AlphaNum ^ 1..0x7]
+
+

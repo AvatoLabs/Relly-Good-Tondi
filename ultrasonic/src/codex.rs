@@ -84,7 +84,7 @@ pub struct Codex {
     pub timestamp: i64,
     /// A set of feature flags.
     ///
-    /// RGB-I-0 consensus has no flags, which is enforced with [`ReservedBytes`] structure.
+    /// RGT-I-0 consensus has no flags, which is enforced with [`ReservedBytes`] structure.
     pub features: ReservedBytes<4>,
     /// The order of the field used by VM for all scripts (operation verification and state access
     /// condition satisfaction).
@@ -446,13 +446,13 @@ mod test {
         let id = CodexId::from_byte_array(blake3_hash(b"test"));
         assert_eq!(
             format!("{id}"),
-            "n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg#berlin-river-delta"
+            "4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s#corona-maxwell-nominal"
         );
         assert_eq!(
             format!("{id:-}"),
-            "codex:n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg#berlin-river-delta"
+            "codex:4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s#corona-maxwell-nominal"
         );
-        assert_eq!(format!("{id:#}"), "n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg");
+        assert_eq!(format!("{id:#}"), "4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s");
     }
 
     #[test]
@@ -460,24 +460,24 @@ mod test {
         let id = CodexId::from_byte_array(blake3_hash(b"test"));
         assert_eq!(
             CodexId::from_str(
-                "n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg#berlin-river-delta"
+                "4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s#corona-maxwell-nominal"
             )
             .unwrap(),
             id
         );
         assert_eq!(
             CodexId::from_str(
-                "codex:n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg#berlin-river-delta"
+                "codex:4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s#corona-maxwell-nominal"
             )
             .unwrap(),
             id
         );
         assert_eq!(
-            CodexId::from_str("codex:n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg").unwrap(),
+            CodexId::from_str("codex:4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s").unwrap(),
             id
         );
         assert_eq!(
-            CodexId::from_str("n4bQgYhM-fWWaL_q-gxVrQFa-O~TxsrC-4Is0V1s-FbDwCgg").unwrap(),
+            CodexId::from_str("4gbc4SPC-~MblwGD-jqOuSy5-JleBxjQ-ulLUjnf-MkP4F2s").unwrap(),
             id
         );
     }
@@ -603,7 +603,7 @@ mod test {
 
     #[test]
     #[should_panic(
-        expected = "WrongContract { expected: ContractId(Array<32>(9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08)), found: ContractId(Array<32>(8810ad581e59f2bc3928b261707a71308f7e139eb04820366dc4d5c18d980225))"
+        expected = "WrongContract { expected: ContractId(Array<32>(e206dce123c2fcc6e5c060e3a8eb92cb9265781c6342e94b5239df3243f8176b)), found: ContractId(Array<32>(eafabdc5ec8907f62189942f5b6d00bc149c4e53dffbaf403bc36a729021b46f))"
     )]
     fn verify_contract_id() {
         test_stand(|_codex, operation, _memory| {

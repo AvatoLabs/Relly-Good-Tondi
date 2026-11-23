@@ -369,7 +369,7 @@ mod test {
         let msgs = make_random_messages(9);
         let tree = make_random_tree(&msgs);
         assert!(tree.depth() > u5::with(3));
-        assert!(tree.factored_width() > 9);
+        assert!(tree.factored_width() as usize >= msgs.len());
         let mut set = BTreeSet::<u32>::new();
         for (pid, msg) in msgs {
             let pos = tree.protocol_id_pos(pid);

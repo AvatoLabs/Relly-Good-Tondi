@@ -31,7 +31,7 @@ use crate::{CoreConfig, Lib, LibSite, LIB_NAME_ALUVM};
 
 /// Strict type id for the lib-old providing data types from this crate.
 pub const LIB_ID_ALUVM: &str =
-    "stl:t1kptI_t-R8Ei0Wa-e0m53SK-toGi5AC-si8GK5F-MbQp588#reward-accent-swim";
+    "stl:G0ntOiBp-Ic4r1dC-Dm_f7cu-hqC186_-GnOE9fF-IV06JeY#event-parking-papa";
 
 #[allow(clippy::result_large_err)]
 fn _aluvm_stl() -> Result<TypeLib, CompileError> {

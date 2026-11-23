@@ -52,6 +52,8 @@
 //! with category theory in mind.
 
 extern crate alloc;
+#[doc(hidden)]
+pub use alloc::vec::Vec as AssemblerVec;
 
 #[macro_use]
 extern crate amplify;
