@@ -52,11 +52,15 @@ impl fe256 {
     pub const ZERO: Self = Self(u256::ZERO);
 
     /// Construct a field element from a 256-bit unsigned integer value.
-    pub const fn to_u256(&self) -> u256 { self.0 }
+    pub const fn to_u256(&self) -> u256 {
+        self.0
+    }
 }
 
 impl From<Bytes32> for fe256 {
-    fn from(bytes: Bytes32) -> Self { Self::from(bytes.into_inner()) }
+    fn from(bytes: Bytes32) -> Self {
+        Self::from(bytes.into_inner())
+    }
 }
 
 impl From<[u8; 32]> for fe256 {
@@ -67,12 +71,16 @@ impl From<[u8; 32]> for fe256 {
 }
 
 impl From<u256> for fe256 {
-    fn from(val: u256) -> Self { Self(val) }
+    fn from(val: u256) -> Self {
+        Self(val)
+    }
 }
 
 impl StrictType for fe256 {
     const STRICT_LIB_NAME: &'static str = LIB_NAME_FINITE_FIELD;
-    fn strict_name() -> Option<TypeName> { Some(tn!("Fe256")) }
+    fn strict_name() -> Option<TypeName> {
+        Some(tn!("Fe256"))
+    }
 }
 impl StrictProduct for fe256 {}
 impl StrictTuple for fe256 {
@@ -88,7 +96,9 @@ mod _serde {
 
     impl Serialize for fe256 {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where S: Serializer {
+        where
+            S: Serializer,
+        {
             if serializer.is_human_readable() {
                 self.to_string().serialize(serializer)
             } else {
@@ -99,7 +109,9 @@ mod _serde {
 
     impl<'de> Deserialize<'de> for fe256 {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where D: Deserializer<'de> {
+        where
+            D: Deserializer<'de>,
+        {
             if deserializer.is_human_readable() {
                 let s = String::deserialize(deserializer)?;
                 Self::from_str(&s).map_err(|e| D::Error::invalid_value(Unexpected::Str(&s), &e.to_string().as_str()))

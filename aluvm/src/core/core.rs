@@ -161,13 +161,17 @@ impl Default for CoreConfig {
     ///
     /// - [`CoreConfig::halt`]
     /// - [`CoreConfig::complexity_lim`]
-    fn default() -> Self { CoreConfig { halt: true, complexity_lim: None } }
+    fn default() -> Self {
+        CoreConfig { halt: true, complexity_lim: None }
+    }
 }
 
 impl<Id: SiteId, Cx: CoreExt, const CALL_STACK_SIZE: usize> Default
     for Core<Id, Cx, CALL_STACK_SIZE>
 {
-    fn default() -> Self { Core::new() }
+    fn default() -> Self {
+        Core::new()
+    }
 }
 
 impl<Id: SiteId, Cx: CoreExt, const CALL_STACK_SIZE: usize> Core<Id, Cx, CALL_STACK_SIZE> {

@@ -225,52 +225,73 @@ pub trait MerkleLeaves {
 }
 
 impl<T, const LEN: usize> MerkleLeaves for [T; LEN]
-where T: CommitId<CommitmentId = MerkleHash>
+where
+    T: CommitId<CommitmentId = MerkleHash>,
 {
     type Leaf = T;
-    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> { self.iter() }
+    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> {
+        self.iter()
+    }
 }
 
 impl<T, const MIN: usize> MerkleLeaves for Confined<Vec<T>, MIN, { u8::MAX as usize }>
-where T: CommitId<CommitmentId = MerkleHash>
+where
+    T: CommitId<CommitmentId = MerkleHash>,
 {
     type Leaf = T;
-    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> { self.iter() }
+    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> {
+        self.iter()
+    }
 }
 
 impl<T: Ord, const MIN: usize> MerkleLeaves for Confined<BTreeSet<T>, MIN, { u8::MAX as usize }>
-where T: CommitId<CommitmentId = MerkleHash>
+where
+    T: CommitId<CommitmentId = MerkleHash>,
 {
     type Leaf = T;
-    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> { self.iter() }
+    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> {
+        self.iter()
+    }
 }
 
 impl<T, const MIN: usize> MerkleLeaves for Confined<Vec<T>, MIN, { u16::MAX as usize }>
-where T: CommitId<CommitmentId = MerkleHash>
+where
+    T: CommitId<CommitmentId = MerkleHash>,
 {
     type Leaf = T;
-    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> { self.iter() }
+    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> {
+        self.iter()
+    }
 }
 
 impl<T: Ord, const MIN: usize> MerkleLeaves for Confined<BTreeSet<T>, MIN, { u16::MAX as usize }>
-where T: CommitId<CommitmentId = MerkleHash>
+where
+    T: CommitId<CommitmentId = MerkleHash>,
 {
     type Leaf = T;
-    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> { self.iter() }
+    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> {
+        self.iter()
+    }
 }
 
 impl<T, const MIN: usize> MerkleLeaves for Confined<Vec<T>, MIN, { u32::MAX as usize }>
-where T: CommitId<CommitmentId = MerkleHash>
+where
+    T: CommitId<CommitmentId = MerkleHash>,
 {
     type Leaf = T;
-    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> { self.iter() }
+    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> {
+        self.iter()
+    }
 }
 
 impl<T: Ord, const MIN: usize> MerkleLeaves for Confined<BTreeSet<T>, MIN, { u32::MAX as usize }>
-where T: CommitId<CommitmentId = MerkleHash>
+where
+    T: CommitId<CommitmentId = MerkleHash>,
 {
     type Leaf = T;
-    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> { self.iter() }
+    fn merkle_leaves(&self) -> impl ExactSizeIterator<Item = &T> {
+        self.iter()
+    }
 }
 
 /// Helper struct to track depth when working with Merkle blocks.

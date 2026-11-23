@@ -72,10 +72,14 @@ impl CoreExt for GfaCore {
     }
 
     #[inline]
-    fn get(&self, reg: Self::Reg) -> Option<fe256> { self.e[reg as usize] }
+    fn get(&self, reg: Self::Reg) -> Option<fe256> {
+        self.e[reg as usize]
+    }
 
     #[inline]
-    fn clr(&mut self, reg: Self::Reg) { self.e[reg as usize] = None; }
+    fn clr(&mut self, reg: Self::Reg) {
+        self.e[reg as usize] = None;
+    }
 
     #[inline]
     fn put(&mut self, reg: Self::Reg, val: Option<fe256>) {
@@ -88,11 +92,15 @@ impl CoreExt for GfaCore {
     }
 
     #[inline]
-    fn reset(&mut self) { self.e = [None; 16]; }
+    fn reset(&mut self) {
+        self.e = [None; 16];
+    }
 }
 
 impl Supercore<NoExt> for GfaCore {
-    fn subcore(&self) -> NoExt { NoExt }
+    fn subcore(&self) -> NoExt {
+        NoExt
+    }
 
     fn merge_subcore(&mut self, _subcore: NoExt) {}
 }
@@ -157,7 +165,9 @@ impl Register for RegE {
     type Value = fe256;
 
     #[inline]
-    fn bytes(self) -> u16 { 32 }
+    fn bytes(self) -> u16 {
+        32
+    }
 }
 
 impl From<u4> for RegE {
@@ -207,5 +217,7 @@ impl RegE {
 
     /// Get a 4-bit representation of the register index.
     #[inline]
-    pub const fn to_u4(self) -> u4 { u4::with(self as u8) }
+    pub const fn to_u4(self) -> u4 {
+        u4::with(self as u8)
+    }
 }

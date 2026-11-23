@@ -28,10 +28,6 @@ strict_types = { workspace = true }
 vesper-lang = "0.2.1"
 commit_encoding_derive = { version = "0.12.0", path = "derive" }
 blake3 = { workspace = true }
-# SHA2 and RIPEMD160 for backward compatibility with external crates (e.g., sonic-api)
-# These will be deprecated once all dependent crates are updated to use TondiBlake3.
-sha2 = { workspace = true }
-ripemd = "0.1.3"
 rand = { version = "0.9.1", optional = true }
 serde = { version = "1.0", package = "serde", optional = true }
 

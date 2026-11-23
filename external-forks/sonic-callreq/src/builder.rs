@@ -28,42 +28,21 @@ use ultrasonic::Consensus;
 
 use crate::{CallRequest, CallState, Endpoint, Layer1, MethodName, StateName};
 
-#[allow(deprecated)]
 impl<T, A> CallRequest<T, A> {
     /// Creates a new call request for Tondi mainnet.
     pub fn tondi_mainnet(scope: T, auth: A, data: Option<StrictVal>) -> Self {
-        Self::new(scope, Consensus::Tondi, false, auth, data)
+        Self::new(scope, Consensus::Tondi, auth, data)
     }
 
     /// Creates a new call request for Tondi testnet.
     pub fn tondi_testnet(scope: T, auth: A, data: Option<StrictVal>) -> Self {
-        Self::new(scope, Consensus::TondiTestnet, true, auth, data)
+        Self::new(scope, Consensus::TondiTestnet, auth, data)
     }
 
-    #[deprecated(note = "Use tondi_mainnet instead")]
-    pub fn legacy_pow_mainnet(scope: T, auth: A, data: Option<StrictVal>) -> Self {
-        Self::new(scope, Consensus::LegacyPow, false, auth, data)
-    }
-
-    #[deprecated(note = "Use tondi_testnet instead")]
-    pub fn legacy_pow_testnet(scope: T, auth: A, data: Option<StrictVal>) -> Self {
-        Self::new(scope, Consensus::LegacyPow, true, auth, data)
-    }
-
-    #[deprecated(note = "Use tondi_mainnet instead")]
-    pub fn legacy_federation_mainnet(scope: T, auth: A, data: Option<StrictVal>) -> Self {
-        Self::new(scope, Consensus::LegacyFederation, false, auth, data)
-    }
-
-    #[deprecated(note = "Use tondi_testnet instead")]
-    pub fn legacy_federation_testnet(scope: T, auth: A, data: Option<StrictVal>) -> Self {
-        Self::new(scope, Consensus::LegacyFederation, true, auth, data)
-    }
-
-    pub fn new(scope: T, consensus: Consensus, testnet: bool, auth: A, data: Option<StrictVal>) -> Self {
+    pub fn new(scope: T, consensus: Consensus, auth: A, data: Option<StrictVal>) -> Self {
         Self {
             scope,
-            layer1: Layer1::new(consensus, testnet),
+            layer1: Layer1 { consensus },
             api: None,
             call: None,
             auth,

@@ -28,19 +28,29 @@ use crate::{Register, Site};
 /// Microcode for flag registers.
 impl<Id: SiteId, Cx: CoreExt, const CALL_STACK_SIZE: usize> Core<Id, Cx, CALL_STACK_SIZE> {
     /// Read overflow/carry flag.
-    pub fn co(&self) -> Status { self.co }
+    pub fn co(&self) -> Status {
+        self.co
+    }
 
     /// Set overflow/carry flag to a value.
-    pub fn set_co(&mut self, co: Status) { self.co = co; }
+    pub fn set_co(&mut self, co: Status) {
+        self.co = co;
+    }
 
     /// Return how many times `ck` was set to a failed state.
-    pub fn cf(&self) -> u64 { self.cf }
+    pub fn cf(&self) -> u64 {
+        self.cf
+    }
 
     /// Return `true` if `ck` was in a failed state for at least once.
-    pub fn has_failed(&self) -> bool { self.cf > 0 }
+    pub fn has_failed(&self) -> bool {
+        self.cf > 0
+    }
 
     /// Return whether check register `ck` is in a failed state.
-    pub fn ck(&self) -> Status { self.ck }
+    pub fn ck(&self) -> Status {
+        self.ck
+    }
 
     /// Set `CK` register to a failed state.
     ///
@@ -53,10 +63,14 @@ impl<Id: SiteId, Cx: CoreExt, const CALL_STACK_SIZE: usize> Core<Id, Cx, CALL_ST
     }
 
     /// Reset `CK` register.
-    pub fn reset_ck(&mut self) { self.ck = Status::Ok }
+    pub fn reset_ck(&mut self) {
+        self.ck = Status::Ok
+    }
 
     /// Return the size of the call stack.
-    pub fn cp(&self) -> u16 { self.cs.len() as u16 }
+    pub fn cp(&self) -> u16 {
+        self.cs.len() as u16
+    }
 
     /// Push a location to a call stack.
     ///
@@ -69,10 +83,14 @@ impl<Id: SiteId, Cx: CoreExt, const CALL_STACK_SIZE: usize> Core<Id, Cx, CALL_ST
     }
 
     /// Pops a call stack item.
-    pub fn pop_cs(&mut self) -> Option<Site<Id>> { self.cs.pop() }
+    pub fn pop_cs(&mut self) -> Option<Site<Id>> {
+        self.cs.pop()
+    }
 
     /// Return complexity limit value.
-    pub fn cl(&self) -> Option<u64> { self.cl }
+    pub fn cl(&self) -> Option<u64> {
+        self.cl
+    }
 
     /// Accumulate complexity value.
     ///
@@ -85,5 +103,7 @@ impl<Id: SiteId, Cx: CoreExt, const CALL_STACK_SIZE: usize> Core<Id, Cx, CALL_ST
     }
 
     /// Get register value.
-    pub fn get(&self, reg: Cx::Reg) -> Option<<Cx::Reg as Register>::Value> { self.cx.get(reg) }
+    pub fn get(&self, reg: Cx::Reg) -> Option<<Cx::Reg as Register>::Value> {
+        self.cx.get(reg)
+    }
 }

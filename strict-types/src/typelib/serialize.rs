@@ -171,7 +171,9 @@ impl armor::StrictArmor for TypeLib {
     type Id = crate::TypeLibId;
     const PLATE_TITLE: &'static str = "STRICT TYPE LIB";
 
-    fn armor_id(&self) -> Self::Id { self.id() }
+    fn armor_id(&self) -> Self::Id {
+        self.id()
+    }
 
     fn armor_headers(&self) -> Vec<armor::ArmorHeader> {
         use armor::ArmorHeader;

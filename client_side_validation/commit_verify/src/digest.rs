@@ -7,8 +7,8 @@
 //
 // Copyright (C) 2019-2024 LNP/BP Standards Association, Switzerland.
 // Copyright (C) 2024-2025 LNP/BP Laboratories,
-//                         Institute for Distributed and Cognitive Systems
-// (InDCS), Switzerland. Copyright (C) 2025 AvatoLabs.
+//                         Institute for Distributed and Cognitive Systems (InDCS), Switzerland.
+// Copyright (C) 2025 AvatoLabs.
 // All rights under the above copyrights are reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -23,10 +23,7 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-//! Cryptographic digest traits and implementations for Tondi L1.
-//!
-//! Tondi uses BLAKE3 as its universal hash function for all cryptographic
-//! commitments, transaction IDs, block hashes, and merkle trees.
+//! BLAKE3 domains for client-side RGT commitments. The native VM computes Note and transaction IDs.
 
 use amplify::num::u24;
 
@@ -45,7 +42,9 @@ pub trait DigestExt<const BYTE_LEN: usize = 32> {
 
     /// Digest raw byte slice returning self.
     fn with_raw(mut self, data: &[u8]) -> Self
-    where Self: Sized {
+    where
+        Self: Sized,
+    {
         self.input_raw(data);
         self
     }
@@ -55,7 +54,9 @@ pub trait DigestExt<const BYTE_LEN: usize = 32> {
     ///
     /// Returns self.
     fn with_len<const MAX: usize>(mut self, data: &[u8]) -> Self
-    where Self: Sized {
+    where
+        Self: Sized,
+    {
         self.input_with_len::<MAX>(data);
         self
     }
@@ -82,26 +83,7 @@ pub trait DigestExt<const BYTE_LEN: usize = 32> {
 // TONDI BLAKE3 IMPLEMENTATION
 // =============================================================================
 
-/// BLAKE3 hasher for Tondi L1.
-///
-/// This is the primary and only hash function for Tondi. It implements
-/// domain separation via BLAKE3's `derive_key` functionality for most
-/// operations, but uses **Prefix Mode** for transaction IDs to match Tondi's
-/// native implementation.
-///
-/// # Domain Separation Modes
-///
-/// - **KDF Mode** (most operations): Uses `new_derive_key()` with context
-///   strings
-///   - Format: "tondi.{domain}:{tag}"
-///   - Examples: "tondi.commitment:urn:tondi:rgb:schema#2025-01-01",
-///     "tondi.block.hash"
-///
-/// - **Prefix Mode** (transaction IDs only): Uses regular hasher with
-///   `b"TransactionID"` prefix
-///   - This matches Tondi's native implementation in
-///     `crypto/hashes/src/hashers.rs`
-///   - Behavior: `blake3("TransactionID" + tx_data)` instead of KDF mode
+/// Domain-separated BLAKE3 hasher for RGT commitments.
 #[derive(Clone)]
 pub struct TondiBlake3 {
     hasher: blake3::Hasher,
@@ -144,60 +126,20 @@ impl TondiBlake3 {
         Self::from_context(&context)
     }
 
-    /// Create a BLAKE3 hasher for transaction operations.
-    ///
-    /// # Critical: Tondi Compatibility
-    ///
-    /// This method MUST match Tondi's native implementation exactly:
-    /// - Uses **Prefix Mode** (not KDF Mode)
-    /// - Prefix: `b"TransactionID"` (13 bytes)
-    /// - Behavior: `blake3("TransactionID" + tx_data)`
-    ///
-    /// Tondi's implementation (from `crypto/hashes/src/hashers.rs`):
-    /// ```text
-    /// let prefix = Vec::from(b"TransactionID");
-    /// // ... later in finalize:
-    /// blake3_256(&self.0) // where self.0 = prefix + data
-    /// ```
-    ///
-    /// This is fundamentally different from BLAKE3's KDF mode
-    /// (`new_derive_key`), which modifies the hash state's initialization
-    /// flags and compresses the context into the IV. Prefix mode simply
-    /// concatenates the prefix with the data.
-    pub fn for_transaction() -> Self {
-        // Use Prefix Mode to match Tondi's native implementation
-        // 1. Create a regular hasher (not KDF)
-        let mut hasher = blake3::Hasher::new();
-
-        // 2. Write the prefix first (matching Tondi's Vec<u8> prefix behavior)
-        hasher.update(b"TransactionID");
-
-        Self { hasher }
-    }
-
-    /// Create a BLAKE3 hasher for block operations.
-    pub fn for_block() -> Self { Self::from_context("tondi.block.hash") }
-
-    /// Create a BLAKE3 hasher for script hash operations.
-    pub fn for_script_hash() -> Self { Self::from_context("tondi.script.hash") }
-
-    /// Create a BLAKE3 hasher for public key hash operations.
-    pub fn for_pubkey_hash() -> Self { Self::from_context("tondi.pubkey.hash") }
-
-    /// Create a BLAKE3 hasher for Copperoot (Taproot) operations.
-    pub fn for_copperoot(domain: &str) -> Self {
-        let context = format!("tondi.copperoot:{}", domain);
-        Self::from_context(&context)
-    }
-
     /// Update the hasher with data.
-    pub fn update(&mut self, data: &[u8]) { self.hasher.update(data); }
+    pub fn update(&mut self, data: &[u8]) {
+        self.hasher.update(data);
+    }
 
     /// Finalize and return the hash.
-    pub fn finalize(self) -> [u8; 32] { self.hasher.finalize().into() }
+    pub fn finalize(self) -> [u8; 32] {
+        self.hasher.finalize().into()
+    }
 
     /// Compute a one-shot BLAKE3 hash.
-    pub fn hash(data: &[u8]) -> [u8; 32] { blake3::hash(data).into() }
+    pub fn hash(data: &[u8]) -> [u8; 32] {
+        blake3::hash(data).into()
+    }
 
     /// Compute a one-shot BLAKE3 hash with domain separation.
     pub fn hash_with_context(context: &str, data: &[u8]) -> [u8; 32] {
@@ -205,26 +147,12 @@ impl TondiBlake3 {
         hasher.update(data);
         hasher.finalize().into()
     }
-
-    /// Compute a truncated hash (for 20-byte hashes like pubkey hashes).
-    pub fn hash_truncated_20(data: &[u8]) -> [u8; 20] {
-        let full = Self::hash(data);
-        let mut result = [0u8; 20];
-        result.copy_from_slice(&full[..20]);
-        result
-    }
-
-    /// Compute a truncated hash with domain separation.
-    pub fn hash_with_context_truncated_20(context: &str, data: &[u8]) -> [u8; 20] {
-        let full = Self::hash_with_context(context, data);
-        let mut result = [0u8; 20];
-        result.copy_from_slice(&full[..20]);
-        result
-    }
 }
 
 impl Default for TondiBlake3 {
-    fn default() -> Self { Self::new() }
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl std::io::Write for TondiBlake3 {
@@ -233,7 +161,9 @@ impl std::io::Write for TondiBlake3 {
         Ok(buf.len())
     }
 
-    fn flush(&mut self) -> std::io::Result<()> { Ok(()) }
+    fn flush(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
 }
 
 impl DigestExt for TondiBlake3 {
@@ -243,90 +173,13 @@ impl DigestExt for TondiBlake3 {
         Self::for_commitment(&tag_str)
     }
 
-    fn input_raw(&mut self, data: &[u8]) { self.hasher.update(data); }
-
-    fn finish(self) -> [u8; 32] { self.hasher.finalize().into() }
-}
-
-/// 20-byte truncated BLAKE3 hasher for address hashes.
-///
-/// This is used for public key hashes and script hashes in Tondi addresses.
-#[derive(Clone)]
-pub struct TondiBlake3_20 {
-    inner: TondiBlake3,
-}
-
-impl std::fmt::Debug for TondiBlake3_20 {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("TondiBlake3_20")
-            .field("inner", &self.inner)
-            .finish()
-    }
-}
-
-impl TondiBlake3_20 {
-    /// Create a new 20-byte truncated hasher.
-    pub fn new() -> Self {
-        Self {
-            inner: TondiBlake3::new(),
-        }
+    fn input_raw(&mut self, data: &[u8]) {
+        self.hasher.update(data);
     }
 
-    /// Create with domain separation.
-    pub fn from_context(context: &str) -> Self {
-        Self {
-            inner: TondiBlake3::from_context(context),
-        }
+    fn finish(self) -> [u8; 32] {
+        self.hasher.finalize().into()
     }
-
-    /// Update with data.
-    pub fn update(&mut self, data: &[u8]) { self.inner.update(data); }
-
-    /// Finalize to 20 bytes.
-    pub fn finalize(self) -> [u8; 20] {
-        let full = self.inner.finalize();
-        let mut result = [0u8; 20];
-        result.copy_from_slice(&full[..20]);
-        result
-    }
-}
-
-impl Default for TondiBlake3_20 {
-    fn default() -> Self { Self::new() }
-}
-
-impl DigestExt<20> for TondiBlake3_20 {
-    fn from_tag(tag: impl AsRef<[u8]>) -> Self {
-        let tag_str = String::from_utf8_lossy(tag.as_ref());
-        let context = format!("tondi.hash20:{}", tag_str);
-        Self::from_context(&context)
-    }
-
-    fn input_raw(&mut self, data: &[u8]) { self.inner.update(data); }
-
-    fn finish(self) -> [u8; 20] { self.finalize() }
-}
-
-// =============================================================================
-// TYPE ALIASES
-// =============================================================================
-
-/// The default hasher type for Tondi.
-pub type DefaultHasher = TondiBlake3;
-
-/// Digest trait re-export for compatibility.
-/// Note: This is a simplified version that only requires the methods we need.
-pub trait Digest: Sized {
-    /// Update the digest with data.
-    fn update(&mut self, data: impl AsRef<[u8]>);
-    /// Finalize the digest.
-    fn finalize(self) -> [u8; 32];
-}
-
-impl Digest for TondiBlake3 {
-    fn update(&mut self, data: impl AsRef<[u8]>) { self.hasher.update(data.as_ref()); }
-
-    fn finalize(self) -> [u8; 32] { self.hasher.finalize().into() }
 }
 
 // =============================================================================
@@ -368,25 +221,4 @@ mod tests {
         assert_eq!(hash.len(), 32);
     }
 
-    #[test]
-    fn test_truncated_20() {
-        let hash = TondiBlake3::hash_truncated_20(b"test data");
-        assert_eq!(hash.len(), 20);
-    }
-
-    #[test]
-    fn test_tondi_blake3_20() {
-        let mut hasher = TondiBlake3_20::new();
-        hasher.update(b"test data");
-        let hash = hasher.finalize();
-        assert_eq!(hash.len(), 20);
-    }
-
-    #[test]
-    fn test_for_specific_domains() {
-        let _tx_hasher = TondiBlake3::for_transaction();
-        let _block_hasher = TondiBlake3::for_block();
-        let _merkle_hasher = TondiBlake3::for_merkle("node");
-        let _copperoot_hasher = TondiBlake3::for_copperoot("leaf");
-    }
 }

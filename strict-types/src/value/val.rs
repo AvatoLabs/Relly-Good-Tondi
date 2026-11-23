@@ -230,7 +230,9 @@ pub enum StrictNum {
 
 impl StrictNum {
     pub fn unwrap_uint<N: TryFrom<u64>>(self) -> N
-    where N::Error: Debug {
+    where
+        N::Error: Debug,
+    {
         let StrictNum::Uint(v) = self else {
             panic!("StrictNum expected to be an unsigned 128-bit integer");
         };
@@ -254,7 +256,9 @@ pub enum EnumTag {
 }
 
 impl From<&'static str> for EnumTag {
-    fn from(tag: &'static str) -> Self { EnumTag::Name(VariantName::from(tag)) }
+    fn from(tag: &'static str) -> Self {
+        EnumTag::Name(VariantName::from(tag))
+    }
 }
 
 impl EnumTag {
@@ -279,7 +283,9 @@ pub struct Blob(pub Vec<u8>);
 
 impl ToHex for Blob {
     #[inline]
-    fn to_hex(&self) -> String { self.0.to_hex() }
+    fn to_hex(&self) -> String {
+        self.0.to_hex()
+    }
 }
 
 #[cfg(feature = "serde")]
@@ -292,7 +298,9 @@ mod _serde {
 
     impl Serialize for Blob {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where S: Serializer {
+        where
+            S: Serializer,
+        {
             if serializer.is_human_readable() {
                 serializer.serialize_str(&self.to_hex())
             } else {
@@ -303,7 +311,9 @@ mod _serde {
 
     impl<'de> Deserialize<'de> for Blob {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where D: Deserializer<'de> {
+        where
+            D: Deserializer<'de>,
+        {
             if deserializer.is_human_readable() {
                 let hex = String::deserialize(deserializer)?;
                 Blob::from_hex(&hex).map_err(D::Error::custom)
@@ -389,31 +399,51 @@ pub enum StrictVal {
 }
 
 impl From<&str> for StrictVal {
-    fn from(value: &str) -> Self { StrictVal::String(value.to_string()) }
+    fn from(value: &str) -> Self {
+        StrictVal::String(value.to_string())
+    }
 }
 
 impl From<&StrictVal> for StrictVal {
-    fn from(value: &StrictVal) -> Self { value.clone() }
+    fn from(value: &StrictVal) -> Self {
+        value.clone()
+    }
 }
 
 impl StrictVal {
-    pub fn num(n: impl Into<StrictNum>) -> Self { StrictVal::Number(n.into()) }
-    pub fn str(s: impl ToString) -> Self { StrictVal::String(s.to_string()) }
-    pub fn bytes(s: impl AsRef<[u8]>) -> Self { StrictVal::Bytes(Blob::from(s.as_ref().to_vec())) }
-    pub fn newtype(inner: impl Into<StrictVal>) -> Self { StrictVal::Tuple(vec![inner.into()]) }
+    pub fn num(n: impl Into<StrictNum>) -> Self {
+        StrictVal::Number(n.into())
+    }
+    pub fn str(s: impl ToString) -> Self {
+        StrictVal::String(s.to_string())
+    }
+    pub fn bytes(s: impl AsRef<[u8]>) -> Self {
+        StrictVal::Bytes(Blob::from(s.as_ref().to_vec()))
+    }
+    pub fn newtype(inner: impl Into<StrictVal>) -> Self {
+        StrictVal::Tuple(vec![inner.into()])
+    }
     pub fn tuple(fields: impl IntoIterator<Item = impl Into<StrictVal>>) -> Self {
         StrictVal::Tuple(fields.into_iter().map(|v| v.into()).collect())
     }
     pub fn struc(fields: impl IntoIterator<Item = (&'static str, impl Into<StrictVal>)>) -> Self {
         StrictVal::Struct(fields.into_iter().map(|(n, v)| (fname!(n), v.into())).collect())
     }
-    pub fn enumer(tag: impl Into<EnumTag>) -> Self { StrictVal::Enum(tag.into()) }
-    pub fn bool(v: bool) -> Self { StrictVal::enumer(v as u8) }
+    pub fn enumer(tag: impl Into<EnumTag>) -> Self {
+        StrictVal::Enum(tag.into())
+    }
+    pub fn bool(v: bool) -> Self {
+        StrictVal::enumer(v as u8)
+    }
     pub fn union(tag: impl Into<EnumTag>, val: impl Into<StrictVal>) -> Self {
         StrictVal::Union(tag.into(), Box::new(val.into()))
     }
-    pub fn none() -> Self { StrictVal::union("none", ()) }
-    pub fn some(val: impl Into<StrictVal>) -> Self { StrictVal::union("some", val) }
+    pub fn none() -> Self {
+        StrictVal::union("none", ())
+    }
+    pub fn some(val: impl Into<StrictVal>) -> Self {
+        StrictVal::union("some", val)
+    }
     pub fn list(items: impl IntoIterator<Item = impl Into<StrictVal>>) -> Self {
         StrictVal::List(items.into_iter().map(|v| v.into()).collect())
     }
@@ -461,7 +491,9 @@ impl StrictVal {
     }
 
     pub fn unwrap_uint<N: TryFrom<u64>>(&self) -> N
-    where N::Error: Debug {
+    where
+        N::Error: Debug,
+    {
         self.unwrap_num().unwrap_uint()
     }
 
@@ -516,7 +548,9 @@ impl StrictVal {
     }
 
     pub fn unwrap_enum<E: StrictEnum>(&self) -> E
-    where u8: From<E> {
+    where
+        u8: From<E>,
+    {
         match self.unwrap_enum_tag() {
             EnumTag::Name(name) => E::from_variant_name(name).unwrap_or_else(|_| {
                 panic!(

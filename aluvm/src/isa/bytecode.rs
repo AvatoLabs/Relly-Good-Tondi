@@ -51,7 +51,9 @@ pub trait Bytecode<Id: SiteId> {
 
     /// Write an instruction as bytecode.
     fn encode_instr<W>(&self, writer: &mut W) -> Result<(), W::Error>
-    where W: BytecodeWrite<Id> {
+    where
+        W: BytecodeWrite<Id>,
+    {
         writer.write_byte(self.opcode_byte())?;
         self.encode_operands(writer)?;
         writer.check_aligned();
@@ -60,7 +62,8 @@ pub trait Bytecode<Id: SiteId> {
 
     /// Writes an instruction operands as bytecode, omitting opcode byte.
     fn encode_operands<W>(&self, writer: &mut W) -> Result<(), W::Error>
-    where W: BytecodeWrite<Id>;
+    where
+        W: BytecodeWrite<Id>;
 
     /// Reads an instruction from bytecode.
     fn decode_instr<R>(reader: &mut R) -> Result<Self, CodeEofError>
@@ -104,7 +107,9 @@ pub trait BytecodeRead<Id: SiteId> {
     fn peek_byte(&self) -> Result<u8, CodeEofError>;
 
     /// Read single bit as a bool value.
-    fn read_bool(&mut self) -> Result<bool, CodeEofError> { Ok(self.read_1bit()? == u1::ONE) }
+    fn read_bool(&mut self) -> Result<bool, CodeEofError> {
+        Ok(self.read_1bit()? == u1::ONE)
+    }
     /// Read single bit.
     fn read_1bit(&mut self) -> Result<u1, CodeEofError>;
     /// Read two bits.
@@ -146,7 +151,8 @@ pub trait BytecodeRead<Id: SiteId> {
 
     /// Read external reference id.
     fn read_ref(&mut self) -> Result<Id, CodeEofError>
-    where Id: Sized;
+    where
+        Id: Sized;
 
     /// Check if the current cursor position is aligned to the next byte.
     ///

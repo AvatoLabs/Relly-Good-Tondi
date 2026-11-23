@@ -33,7 +33,8 @@ use crate::library::{Jump, Lib, LibId, LibSite};
 /// Alu virtual machine providing single-core execution environment
 #[derive(Clone, Debug, Default)]
 pub struct Vm<Isa = Instr<LibId>>
-where Isa: Instruction<LibId>
+where
+    Isa: Instruction<LibId>,
 {
     /// A set of registers
     pub core: Core<LibId, Isa::Core>,
@@ -43,10 +44,13 @@ where Isa: Instruction<LibId>
 
 /// Runtime for program execution.
 impl<Isa> Vm<Isa>
-where Isa: Instruction<LibId>
+where
+    Isa: Instruction<LibId>,
 {
     /// Constructs new virtual machine instance with default core configuration.
-    pub fn new() -> Self { Self { core: Core::new(), phantom: Default::default() } }
+    pub fn new() -> Self {
+        Self { core: Core::new(), phantom: Default::default() }
+    }
 
     /// Constructs new virtual machine instance with default core configuration.
     pub fn with(config: CoreConfig, cx_config: <Isa::Core as CoreExt>::Config) -> Self {
@@ -57,7 +61,9 @@ where Isa: Instruction<LibId>
     }
 
     /// Resets all registers of the VM except those which were set up with the config object.
-    pub fn reset(&mut self) { self.core.reset(); }
+    pub fn reset(&mut self) {
+        self.core.reset();
+    }
 
     /// Executes the program starting from the provided entry point.
     ///

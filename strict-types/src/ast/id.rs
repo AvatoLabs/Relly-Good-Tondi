@@ -50,7 +50,9 @@ pub struct SemId(
 
 impl Default for SemId {
     /// Default implementation returns semantic id of a Unit type.
-    fn default() -> Self { Ty::<SemId>::UNIT.sem_id_unnamed() }
+    fn default() -> Self {
+        Ty::<SemId>::UNIT.sem_id_unnamed()
+    }
 }
 
 impl DisplayBaid64 for SemId {
@@ -59,31 +61,47 @@ impl DisplayBaid64 for SemId {
     const PREFIX: bool = true;
     const EMBED_CHECKSUM: bool = false;
     const MNEMONIC: bool = true;
-    fn to_baid64_payload(&self) -> [u8; 32] { self.to_byte_array() }
+    fn to_baid64_payload(&self) -> [u8; 32] {
+        self.to_byte_array()
+    }
 }
 impl FromBaid64Str for SemId {}
 impl FromStr for SemId {
     type Err = Baid64ParseError;
-    fn from_str(s: &str) -> Result<Self, Self::Err> { Self::from_baid64_str(s) }
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::from_baid64_str(s)
+    }
 }
 impl Display for SemId {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result { self.fmt_baid64(f) }
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        self.fmt_baid64(f)
+    }
 }
 
 pub const SEM_ID_TAG: [u8; 32] = *b"urn:tondi:strict-types:typ:v0001";
 
 impl SemId {
-    pub fn unit() -> Self { SemId::default() }
+    pub fn unit() -> Self {
+        SemId::default()
+    }
 }
 
 impl TypeRef for SemId {
-    fn is_unicode_char(&self) -> bool { Self::unicode_char() == *self }
-    fn is_byte(&self) -> bool { Self::byte() == *self || Ty::<Self>::U8.sem_id_unnamed() == *self }
+    fn is_unicode_char(&self) -> bool {
+        Self::unicode_char() == *self
+    }
+    fn is_byte(&self) -> bool {
+        Self::byte() == *self || Ty::<Self>::U8.sem_id_unnamed() == *self
+    }
 }
 
 impl PrimitiveRef for SemId {
-    fn byte() -> Self { Ty::<Self>::BYTE.sem_id_unnamed() }
-    fn unicode_char() -> Self { Ty::<Self>::UNICODE.sem_id_unnamed() }
+    fn byte() -> Self {
+        Ty::<Self>::BYTE.sem_id_unnamed()
+    }
+    fn unicode_char() -> Self {
+        Ty::<Self>::UNICODE.sem_id_unnamed()
+    }
 }
 
 impl<Ref: TypeRef> Ty<Ref> {
@@ -112,7 +130,9 @@ impl Ty<SemId> {
 }
 
 impl<Ref: LibSubref> Ty<Ref> {
-    pub fn sem_id_named(&self, name: &TypeName) -> SemId { self.sem_id_inner(Some(name)) }
+    pub fn sem_id_named(&self, name: &TypeName) -> SemId {
+        self.sem_id_inner(Some(name))
+    }
     pub fn sem_id_unnamed(&self) -> SemId {
         // For unnamed 1-tuples we must not produce a new sem id
         if let Some(inner) = self.as_wrapped_ty() {
@@ -124,7 +144,9 @@ impl<Ref: LibSubref> Ty<Ref> {
 
 // TODO: Make sure we do a right thing here - a valid sem id can be produced from the TranspileRef
 impl Ty<TranspileRef> {
-    pub fn sem_id_named(&self, name: &TypeName) -> SemId { self.sem_id_inner(Some(name)) }
+    pub fn sem_id_named(&self, name: &TypeName) -> SemId {
+        self.sem_id_inner(Some(name))
+    }
 }
 
 pub trait SemCommit {
@@ -199,7 +221,9 @@ impl<Ref: TypeRef> SemCommit for Ty<Ref> {
 }
 
 impl SemCommit for Cls {
-    fn sem_commit(&self, hasher: &mut impl CommitConsume) { hasher.commit_consume([*self as u8]); }
+    fn sem_commit(&self, hasher: &mut impl CommitConsume) {
+        hasher.commit_consume([*self as u8]);
+    }
 }
 
 impl<Ref: TypeRef> SemCommit for Field<Ref> {

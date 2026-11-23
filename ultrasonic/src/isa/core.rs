@@ -103,11 +103,17 @@ impl CoreExt for UsonicCore {
     type Reg = RegE;
     type Config = GfaConfig;
 
-    fn with(config: Self::Config) -> Self { UsonicCore { ui: [0; 4], gfa: GfaCore::with(config) } }
+    fn with(config: Self::Config) -> Self {
+        UsonicCore { ui: [0; 4], gfa: GfaCore::with(config) }
+    }
 
-    fn get(&self, reg: Self::Reg) -> Option<<Self::Reg as Register>::Value> { self.gfa.get(reg) }
+    fn get(&self, reg: Self::Reg) -> Option<<Self::Reg as Register>::Value> {
+        self.gfa.get(reg)
+    }
 
-    fn clr(&mut self, reg: Self::Reg) { self.gfa.clr(reg) }
+    fn clr(&mut self, reg: Self::Reg) {
+        self.gfa.clr(reg)
+    }
 
     fn put(&mut self, reg: Self::Reg, val: Option<<Self::Reg as Register>::Value>) {
         self.gfa.put(reg, val)
@@ -120,13 +126,19 @@ impl CoreExt for UsonicCore {
 }
 
 impl Supercore<GfaCore> for UsonicCore {
-    fn subcore(&self) -> GfaCore { self.gfa }
+    fn subcore(&self) -> GfaCore {
+        self.gfa
+    }
 
-    fn merge_subcore(&mut self, subcore: GfaCore) { self.gfa = subcore; }
+    fn merge_subcore(&mut self, subcore: GfaCore) {
+        self.gfa = subcore;
+    }
 }
 
 impl Supercore<NoExt> for UsonicCore {
-    fn subcore(&self) -> NoExt { NoExt }
+    fn subcore(&self) -> NoExt {
+        NoExt
+    }
 
     fn merge_subcore(&mut self, _subcore: NoExt) {}
 }

@@ -139,9 +139,13 @@ impl SymbolicSys {
         })
     }
 
-    pub fn new(types: TypeSystem, symbols: Symbols) -> Self { Self { symbols, types } }
+    pub fn new(types: TypeSystem, symbols: Symbols) -> Self {
+        Self { symbols, types }
+    }
 
-    pub fn id(&self) -> TypeSysId { self.types.id() }
+    pub fn id(&self) -> TypeSysId {
+        self.types.id()
+    }
 
     pub fn get(&self, spec: impl Into<TypeSpec>) -> Option<&Ty<SemId>> {
         let sem_id = self.to_sem_id(spec)?;
@@ -154,9 +158,13 @@ impl SymbolicSys {
         Some(TypeTree::new(sem_id, self))
     }
 
-    pub fn resolve(&self, fqn: impl Into<TypeFqn>) -> Option<&SemId> { self.symbols.get(fqn) }
+    pub fn resolve(&self, fqn: impl Into<TypeFqn>) -> Option<&SemId> {
+        self.symbols.get(fqn)
+    }
 
-    pub fn lookup(&self, sem_id: SemId) -> Option<&TypeFqn> { self.symbols.lookup(sem_id) }
+    pub fn lookup(&self, sem_id: SemId) -> Option<&TypeFqn> {
+        self.symbols.lookup(sem_id)
+    }
 
     pub fn to_sem_id(&self, spec: impl Into<TypeSpec>) -> Option<SemId> {
         match spec.into() {
@@ -165,7 +173,9 @@ impl SymbolicSys {
         }
     }
 
-    pub fn into_type_system(self) -> TypeSystem { self.types }
+    pub fn into_type_system(self) -> TypeSystem {
+        self.types
+    }
 }
 
 impl Display for SymbolicSys {
@@ -191,5 +201,7 @@ impl armor::StrictArmor for SymbolicSys {
     type Id = TypeSysId;
     const PLATE_TITLE: &'static str = "STRICT SYMBOLIC TYPES";
 
-    fn armor_id(&self) -> Self::Id { self.id() }
+    fn armor_id(&self) -> Self::Id {
+        self.id()
+    }
 }

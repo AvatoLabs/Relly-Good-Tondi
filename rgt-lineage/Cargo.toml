@@ -1,0 +1,13 @@
+[package]
+name = "rgt-lineage"
+version = "0.1.0"
+edition = "2024"
+license.workspace = true
+
+[dependencies]
+ultrasonic.workspace = true
+strict_encoding.workspace = true
+serde.workspace = true
+blake3.workspace = true
+sha2.workspace = true
+bytes = "1"

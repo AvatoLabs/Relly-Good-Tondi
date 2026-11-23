@@ -148,7 +148,9 @@ pub trait Instruction<Id: SiteId>: Display + Debug + Bytecode<Id> + Clone + Eq {
     /// Returns computational complexity of the instruction.
     ///
     /// Computational complexity is the number of "CPU ticks" required to process the instruction.
-    fn complexity(&self) -> u64 { self.base_complexity() }
+    fn complexity(&self) -> u64 {
+        self.base_complexity()
+    }
 
     /// Executes the given instruction taking all registers as input and output.
     ///

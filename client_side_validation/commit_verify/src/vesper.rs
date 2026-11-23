@@ -86,7 +86,7 @@ impl Attribute for Attr {
             Attr::Tagged(tag) => AttrVal::Expr(AttrExpr::Tag(tag)),
             Attr::Concealed(fqn) => AttrVal::Ident(fqn.name.to_ident()),
             Attr::LenRange(range) => AttrVal::Expr(AttrExpr::LenRange(range.clone())),
-            Attr::Hasher => AttrVal::Ident(ident!("SHA256")),
+            Attr::Hasher => AttrVal::Ident(ident!("BLAKE3")),
         }
     }
 }
@@ -126,8 +126,8 @@ impl CommitStep {
 
     fn content(&self) -> TinyVec<Box<VesperCommit>> {
         match self {
-            CommitStep::Collection(CommitColType::List, _, val) |
-            CommitStep::Collection(CommitColType::Set, _, val) => {
+            CommitStep::Collection(CommitColType::List, _, val)
+            | CommitStep::Collection(CommitColType::Set, _, val) => {
                 tiny_vec![Box::new(VesperCommit {
                     subject: val.name.to_ident(),
                     predicate: Pred::Element,
@@ -154,10 +154,10 @@ impl CommitStep {
                     })
                 ]
             }
-            CommitStep::Serialized(_) |
-            CommitStep::Hashed(_) |
-            CommitStep::Merklized(_) |
-            CommitStep::Concealed(_) => empty!(),
+            CommitStep::Serialized(_)
+            | CommitStep::Hashed(_)
+            | CommitStep::Merklized(_)
+            | CommitStep::Concealed(_) => empty!(),
         }
     }
 }

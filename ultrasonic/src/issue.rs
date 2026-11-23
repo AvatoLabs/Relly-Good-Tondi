@@ -21,8 +21,6 @@
 // or implied. See the License for the specific language governing permissions and limitations under
 // the License.
 
-// Legacy variants in Consensus enum are deprecated but kept for backward compatibility
-#![allow(deprecated)]
 
 use core::fmt::Debug;
 use core::str::FromStr;
@@ -73,7 +71,9 @@ pub struct Issue {
 }
 
 impl PartialEq for Issue {
-    fn eq(&self, other: &Self) -> bool { self.commit_id() == other.commit_id() }
+    fn eq(&self, other: &Self) -> bool {
+        self.commit_id() == other.commit_id()
+    }
 }
 
 impl CommitEncode for Issue {
@@ -93,19 +93,25 @@ impl Issue {
     /// Contract id is a commitment to the contract issue information, which includes contract
     /// metadata, codex, and genesis operation.
     #[inline]
-    pub fn contract_id(&self) -> ContractId { self.commit_id() }
+    pub fn contract_id(&self) -> ContractId {
+        self.commit_id()
+    }
 
     /// Compute codex id.
     ///
     /// Shorthand for [`Self::issue::codex_id()`].
     #[inline]
-    pub fn codex_id(&self) -> CodexId { self.codex.codex_id() }
+    pub fn codex_id(&self) -> CodexId {
+        self.codex.codex_id()
+    }
 
     /// Computes the operation id of the genesis operation.
     ///
     /// Equals to the [`Genesis::opid`] called with [`Self::contract_id`] as an argument.
     #[inline]
-    pub fn genesis_opid(&self) -> Opid { self.genesis.opid(self.contract_id()) }
+    pub fn genesis_opid(&self) -> Opid {
+        self.genesis.opid(self.contract_id())
+    }
 }
 
 /// Consensus (layer 1) which is used by a contract.
@@ -116,45 +122,21 @@ impl Issue {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize), serde(rename_all = "camelCase"))]
 #[repr(u8)]
 pub enum Consensus {
-    /// No consensus is used.
-    ///
-    /// This means the contract data are not final and depend on the external consensus between
-    /// the contract parties.
+    /// Tondi v10 mainnet Note ledger.
     #[strict_type(dumb)]
-    None = 0,
-
-    /// Tondi BlockDAG + PoW consensus (primary for this workspace).
     Tondi = 0x30,
-
-    /// Tondi testnet consensus.
+    /// Tondi v10 test network Note ledger.
+    #[display("tondi-testnet")]
     TondiTestnet = 0x31,
-
-    /// Prime consensus.
-    Prime = 0x20,
-
-    // Legacy variants kept for backward compatibility with external crates.
-    // These should not be used for new Tondi contracts.
-    /// Deprecated proof-of-work chain slot kept for external crate compatibility.
-    #[deprecated(note = "Use Tondi consensus instead")]
-    LegacyPow = 0x10,
-
-    /// Deprecated federated chain slot kept for external crate compatibility.
-    #[deprecated(note = "Use Tondi consensus instead")]
-    LegacyFederation = 0x11,
 }
 
 impl FromStr for Consensus {
     type Err = String;
 
-    #[allow(deprecated)]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "none" => Ok(Consensus::None),
             "tondi" => Ok(Consensus::Tondi),
-            "tondi-testnet" | "tondi_testnet" => Ok(Consensus::TondiTestnet),
-            "prime" => Ok(Consensus::Prime),
-            "legacy-pow" | "legacy_pow" => Ok(Consensus::LegacyPow),
-            "legacy-federation" | "legacy_federation" => Ok(Consensus::LegacyFederation),
+            "tondi-testnet" => Ok(Consensus::TondiTestnet),
             _ => Err(s.to_owned()),
         }
     }
@@ -174,7 +156,7 @@ pub struct ContractMeta {
     pub timestamp: i64,
     /// A set of feature flags.
     ///
-    /// RGB-I-0 consensus has no flags, which is enforced with [`ReservedBytes`] structure.
+    /// RGT-I-0 consensus has no flags, which is enforced with [`ReservedBytes`] structure.
     pub features: ReservedBytes<6>,
     /// A name of the contract.
     pub name: ContractName,
@@ -221,7 +203,9 @@ pub struct ContractId(
 impl_serde_str_bin_wrapper!(ContractId, Bytes32);
 
 impl From<TondiBlake3> for ContractId {
-    fn from(hasher: TondiBlake3) -> Self { hasher.finish().into() }
+    fn from(hasher: TondiBlake3) -> Self {
+        hasher.finish().into()
+    }
 }
 
 impl CommitmentId for ContractId {
@@ -243,15 +227,21 @@ mod _baid4 {
         const PREFIX: bool = true;
         const EMBED_CHECKSUM: bool = false;
         const MNEMONIC: bool = false;
-        fn to_baid64_payload(&self) -> [u8; 32] { self.to_byte_array() }
+        fn to_baid64_payload(&self) -> [u8; 32] {
+            self.to_byte_array()
+        }
     }
     impl FromBaid64Str for ContractId {}
     impl FromStr for ContractId {
         type Err = Baid64ParseError;
-        fn from_str(s: &str) -> Result<Self, Self::Err> { Self::from_baid64_str(s) }
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            Self::from_baid64_str(s)
+        }
     }
     impl Display for ContractId {
-        fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result { self.fmt_baid64(f) }
+        fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+            self.fmt_baid64(f)
+        }
     }
 }
 
@@ -267,6 +257,19 @@ mod test {
         let mut hasher = TondiBlake3::from_tag("test");
         hasher.input_raw(data);
         hasher.finish()
+    }
+
+    #[test]
+    fn only_note_networks_are_recognized() {
+        for tag in [0, 0x10, 0x11, 0x20] {
+            assert!(Consensus::try_from(tag as u8).is_err());
+        }
+        for name in ["none", "prime", "legacy-pow", "legacy-federation", "tondi_testnet"] {
+            assert!(name.parse::<Consensus>().is_err());
+        }
+        for network in [Consensus::Tondi, Consensus::TondiTestnet] {
+            assert_eq!(network.to_string().parse(), Ok(network));
+        }
     }
 
     #[test]

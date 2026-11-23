@@ -52,15 +52,21 @@ impl DisplayBaid64 for TypeSysId {
     const PREFIX: bool = true;
     const EMBED_CHECKSUM: bool = false;
     const MNEMONIC: bool = true;
-    fn to_baid64_payload(&self) -> [u8; 32] { self.to_byte_array() }
+    fn to_baid64_payload(&self) -> [u8; 32] {
+        self.to_byte_array()
+    }
 }
 impl FromBaid64Str for TypeSysId {}
 impl FromStr for TypeSysId {
     type Err = Baid64ParseError;
-    fn from_str(s: &str) -> Result<Self, Self::Err> { Self::from_baid64_str(s) }
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::from_baid64_str(s)
+    }
 }
 impl Display for TypeSysId {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result { self.fmt_baid64(f) }
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        self.fmt_baid64(f)
+    }
 }
 
 impl SemCommit for TypeSystem {

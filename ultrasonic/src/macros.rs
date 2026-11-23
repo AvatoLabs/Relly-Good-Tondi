@@ -29,7 +29,9 @@ macro_rules! impl_serde_str_bin_wrapper {
     ($ty:ty, $inner:ty) => {
         impl serde::Serialize for $ty {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-            where S: serde::Serializer {
+            where
+                S: serde::Serializer,
+            {
                 if serializer.is_human_readable() {
                     serializer.serialize_str(&self.to_string())
                 } else {
@@ -40,7 +42,9 @@ macro_rules! impl_serde_str_bin_wrapper {
 
         impl<'de> serde::Deserialize<'de> for $ty {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-            where D: serde::Deserializer<'de> {
+            where
+                D: serde::Deserializer<'de>,
+            {
                 use serde::de::Error;
                 if deserializer.is_human_readable() {
                     let s = String::deserialize(deserializer)?;

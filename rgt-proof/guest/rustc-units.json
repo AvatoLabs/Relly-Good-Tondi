@@ -1,0 +1,13 @@
+{
+  "aluvm/0.12.0/aluvm/guest/feature=\"default\"": "fc05b605a34fcbb8",
+  "commit_encoding_derive/0.12.0/commit_encoding_derive/host/": "3f68a539f4565ce5",
+  "commit_verify/0.12.0/commit_verify/guest/feature=\"default\",feature=\"derive\"": "b69b162b14a8c4c1",
+  "rgt-lineage/0.1.0/rgt_lineage/guest/": "0d0d441a25e93b1b",
+  "rgt-step/0.1.0/rgt_step/guest/": "338aa696d0d73e13",
+  "strict_encoding/2.9.1/strict_encoding/guest/feature=\"default\",feature=\"derive\"": "747a88ff86e22e35",
+  "strict_encoding_derive/2.9.1/strict_encoding_derive/host/": "e929a2a9527b14ed",
+  "strict_types/2.9.1/strict_types/guest/feature=\"default\",feature=\"vesper\"": "fe6a3f0b944b4c00",
+  "ultrasonic/0.12.0/ultrasonic/guest/feature=\"baid64\",feature=\"chf-sha256\",feature=\"default\"": "c5f44dfacdd6613d",
+  "vesper-lang/0.2.3/vesper/guest/feature=\"default\"": "638a0db4467bc92e",
+  "zk-aluvm/0.12.0/zkaluvm/guest/feature=\"default\"": "0e1ecab3f34b2035"
+}

@@ -57,11 +57,15 @@ pub struct Opid(
 impl_serde_str_bin_wrapper!(Opid, Bytes32);
 
 impl From<Opid> for [u8; 32] {
-    fn from(opid: Opid) -> Self { opid.to_byte_array() }
+    fn from(opid: Opid) -> Self {
+        opid.to_byte_array()
+    }
 }
 
 impl From<TondiBlake3> for Opid {
-    fn from(hasher: TondiBlake3) -> Self { hasher.finish().into() }
+    fn from(hasher: TondiBlake3) -> Self {
+        hasher.finish().into()
+    }
 }
 
 impl CommitmentId for Opid {
@@ -90,7 +94,9 @@ pub struct CellAddr {
 
 impl CellAddr {
     /// Construct a memory cell address from an operation id and output number.
-    pub fn new(opid: Opid, pos: u16) -> Self { Self { opid, pos } }
+    pub fn new(opid: Opid, pos: u16) -> Self {
+        Self { opid, pos }
+    }
 }
 
 impl From<[u8; 34]> for CellAddr {
@@ -127,15 +133,21 @@ mod _baid64 {
         const PREFIX: bool = false;
         const EMBED_CHECKSUM: bool = false;
         const MNEMONIC: bool = false;
-        fn to_baid64_payload(&self) -> [u8; 32] { self.to_byte_array() }
+        fn to_baid64_payload(&self) -> [u8; 32] {
+            self.to_byte_array()
+        }
     }
     impl FromBaid64Str for Opid {}
     impl FromStr for Opid {
         type Err = Baid64ParseError;
-        fn from_str(s: &str) -> Result<Self, Self::Err> { Self::from_baid64_str(s) }
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            Self::from_baid64_str(s)
+        }
     }
     impl Display for Opid {
-        fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result { self.fmt_baid64(f) }
+        fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+            self.fmt_baid64(f)
+        }
     }
 
     impl Opid {
@@ -195,7 +207,9 @@ mod _serde {
 
     impl Serialize for CellAddr {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where S: Serializer {
+        where
+            S: Serializer,
+        {
             if serializer.is_human_readable() {
                 self.to_string().serialize(serializer)
             } else {
@@ -209,7 +223,9 @@ mod _serde {
 
     impl<'de> Deserialize<'de> for CellAddr {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where D: Deserializer<'de> {
+        where
+            D: Deserializer<'de>,
+        {
             if deserializer.is_human_readable() {
                 let s = String::deserialize(deserializer)?;
                 CellAddr::from_str(&s).map_err(D::Error::custom)
@@ -336,7 +352,9 @@ impl Genesis {
     /// The method call re-computed the id by hashing all the operation data, thus it is
     /// computationally-expensive, and the received value should be cached.
     #[inline]
-    pub fn opid(&self, contract_id: ContractId) -> Opid { self.to_operation(contract_id).opid() }
+    pub fn opid(&self, contract_id: ContractId) -> Opid {
+        self.to_operation(contract_id).opid()
+    }
 }
 
 /// Operation under a contract which may update the contract state.
@@ -396,16 +414,24 @@ pub struct Operation {
 }
 
 impl PartialOrd for Operation {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> { Some(self.cmp(other)) }
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 impl Ord for Operation {
-    fn cmp(&self, other: &Self) -> Ordering { self.opid().cmp(&other.opid()) }
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.opid().cmp(&other.opid())
+    }
 }
 impl PartialEq for Operation {
-    fn eq(&self, other: &Self) -> bool { self.opid() == other.opid() }
+    fn eq(&self, other: &Self) -> bool {
+        self.opid() == other.opid()
+    }
 }
 impl Hash for Operation {
-    fn hash<H: Hasher>(&self, state: &mut H) { state.write(&self.opid().to_byte_array()); }
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        state.write(&self.opid().to_byte_array());
+    }
 }
 
 impl CommitEncode for Operation {
@@ -430,7 +456,9 @@ impl Operation {
     /// The id is computed using the `CommitEncode` procedure and is equivalent to the value
     /// returned by [`Self::commit_id`].
     #[inline]
-    pub fn opid(&self) -> Opid { self.commit_id() }
+    pub fn opid(&self) -> Opid {
+        self.commit_id()
+    }
 }
 
 /// Provably verified operation, which can be constructed only by running [`Codex::verify`] method.
@@ -438,32 +466,46 @@ impl Operation {
 pub struct VerifiedOperation(Opid, Operation);
 
 impl PartialEq for VerifiedOperation {
-    fn eq(&self, other: &Self) -> bool { self.0 == other.0 }
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
 }
 impl PartialOrd for VerifiedOperation {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> { Some(self.cmp(other)) }
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 impl Ord for VerifiedOperation {
-    fn cmp(&self, other: &Self) -> Ordering { self.0.cmp(&other.0) }
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.0.cmp(&other.0)
+    }
 }
 
 impl VerifiedOperation {
     #[doc(hidden)]
-    pub(crate) fn new_unchecked(opid: Opid, operation: Operation) -> Self { Self(opid, operation) }
+    pub(crate) fn new_unchecked(opid: Opid, operation: Operation) -> Self {
+        Self(opid, operation)
+    }
 
     /// Get the operation id.
     ///
     /// The method uses cached value, thus running it is inexpensive.
     #[inline]
-    pub fn opid(&self) -> Opid { self.0 }
+    pub fn opid(&self) -> Opid {
+        self.0
+    }
 
     /// Return a reference for the verified operation data.
     #[inline]
-    pub fn as_operation(&self) -> &Operation { &self.1 }
+    pub fn as_operation(&self) -> &Operation {
+        &self.1
+    }
 
     /// Release the operation, discarding the verification status and cached opid.
     #[inline]
-    pub fn into_operation(self) -> Operation { self.1 }
+    pub fn into_operation(self) -> Operation {
+        self.1
+    }
 }
 
 #[cfg(test)]
@@ -505,10 +547,8 @@ mod test {
             id
         );
         assert_eq!(
-            Opid::from_str(
-                "usop:4gbc4SPC~MblwGDjqOuSy5JleBxjQulLUjnfMkP4F2s#economy-charter-pigment"
-            )
-            .unwrap(),
+            Opid::from_str("usop:4gbc4SPC~MblwGDjqOuSy5JleBxjQulLUjnfMkP4F2s#economy-charter-pigment")
+                .unwrap(),
             id
         );
     }
@@ -517,10 +557,14 @@ mod test {
     #[cfg(all(feature = "serde", feature = "baid64"))]
     fn opid_serde() {
         let val = Opid::strict_dumb();
-        test_serde_str_bin_wrapper!(val, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", &[
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0
-        ]);
+        test_serde_str_bin_wrapper!(
+            val,
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            &[
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0
+            ]
+        );
     }
 
     #[test]
@@ -528,17 +572,21 @@ mod test {
     fn cell_addr_serde() {
         use serde_test::{assert_tokens, Configure, Token};
         let val = CellAddr::strict_dumb();
-        assert_eq!(bincode::serialize(&val).unwrap(), &[
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0
-        ]);
+        assert_eq!(
+            bincode::serialize(&val).unwrap(),
+            &[
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0
+            ]
+        );
         assert_eq!(
             bincode::serialize(&val).unwrap(),
             bincode::serialize(&(val.opid, val.pos)).unwrap()
         );
-        assert_tokens(&val.readable(), &[Token::Str(
-            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:0",
-        )]);
+        assert_tokens(
+            &val.readable(),
+            &[Token::Str("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:0")],
+        );
     }
 
     #[test]

@@ -43,27 +43,39 @@ pub trait Register: Copy + Ord + Debug + Display {
 pub enum NoRegs {}
 #[allow(clippy::non_canonical_clone_impl)]
 impl Clone for NoRegs {
-    fn clone(&self) -> Self { unreachable!() }
+    fn clone(&self) -> Self {
+        unreachable!()
+    }
 }
 impl Copy for NoRegs {}
 #[allow(clippy::non_canonical_clone_impl)]
 impl PartialEq for NoRegs {
-    fn eq(&self, _: &Self) -> bool { unreachable!() }
+    fn eq(&self, _: &Self) -> bool {
+        unreachable!()
+    }
 }
 impl Eq for NoRegs {}
 impl Ord for NoRegs {
-    fn cmp(&self, _: &Self) -> Ordering { unreachable!() }
+    fn cmp(&self, _: &Self) -> Ordering {
+        unreachable!()
+    }
 }
 #[allow(clippy::non_canonical_partial_ord_impl)]
 impl PartialOrd for NoRegs {
-    fn partial_cmp(&self, _: &Self) -> Option<Ordering> { unreachable!() }
+    fn partial_cmp(&self, _: &Self) -> Option<Ordering> {
+        unreachable!()
+    }
 }
 impl Display for NoRegs {
-    fn fmt(&self, _: &mut Formatter<'_>) -> fmt::Result { unreachable!() }
+    fn fmt(&self, _: &mut Formatter<'_>) -> fmt::Result {
+        unreachable!()
+    }
 }
 impl Register for NoRegs {
     type Value = u8;
-    fn bytes(self) -> u16 { unreachable!() }
+    fn bytes(self) -> u16 {
+        unreachable!()
+    }
 }
 
 /// Status for flag registers.
@@ -81,7 +93,9 @@ pub enum Status {
 
 impl Status {
     /// Checks if the flag is not set, and no failure has happened.
-    pub fn is_ok(self) -> bool { self == Status::Ok }
+    pub fn is_ok(self) -> bool {
+        self == Status::Ok
+    }
 }
 
 impl Not for Status {
@@ -116,7 +130,9 @@ pub struct Site<Id: SiteId> {
 impl<Id: SiteId> Site<Id> {
     /// Construct a new code site out of program identifier and code offset.
     #[inline]
-    pub fn new(prog_id: Id, offset: u16) -> Self { Self { prog_id, offset } }
+    pub fn new(prog_id: Id, offset: u16) -> Self {
+        Self { prog_id, offset }
+    }
 }
 
 impl<Id: SiteId> Display for Site<Id> {
@@ -133,13 +149,21 @@ impl CoreExt for NoExt {
     type Reg = NoRegs;
     type Config = ();
 
-    fn with(_config: Self::Config) -> Self { NoExt }
+    fn with(_config: Self::Config) -> Self {
+        NoExt
+    }
 
-    fn get(&self, _reg: Self::Reg) -> Option<u8> { unreachable!() }
+    fn get(&self, _reg: Self::Reg) -> Option<u8> {
+        unreachable!()
+    }
 
-    fn clr(&mut self, _reg: Self::Reg) { unreachable!() }
+    fn clr(&mut self, _reg: Self::Reg) {
+        unreachable!()
+    }
 
-    fn put(&mut self, _reg: Self::Reg, _val: Option<u8>) { unreachable!() }
+    fn put(&mut self, _reg: Self::Reg, _val: Option<u8>) {
+        unreachable!()
+    }
 
     fn reset(&mut self) {}
 }

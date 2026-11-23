@@ -1,0 +1,28 @@
+{-
+  Id: stl:Sa7PhbqU-Nh3Tsvt-~KjiLwE-3D0TFt3-F25hM44-2lFRfs0#puma-parent-lunar
+  Name: RgtTondiV10
+  Version: 1.0.0
+  Description: Tondi v10 Note seals, openings and ordering witnesses.
+-}
+
+@context
+typelib RgtTondiV10
+
+-- no dependencies
+
+@mnemonic(pandora-coconut-brave)
+data NoteSeal          : txid NoteTxid, vout U32
+
+@mnemonic(micro-marion-tribal)
+data NoteTxid          : [Byte ^ 32]
+
+@mnemonic(final-nato-echo)
+data NoteWitness       : txid NoteTxid, record [Byte ^ ..0x80004]
+
+@mnemonic(book-sofia-road)
+data Opening           : txid NoteTxid?
+                       , vout U32
+                       , auth [Byte ^ 32]
+                       , blinding [Byte ^ 32]
+
+

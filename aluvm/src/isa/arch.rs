@@ -57,11 +57,15 @@ macro_rules! isa {
 pub struct IsaId(RString<AlphaCapsNum, AlphaCapsNum, 1, ISA_ID_MAX_LEN>);
 
 impl StrictDumb for IsaId {
-    fn strict_dumb() -> Self { Self::from("DUMB") }
+    fn strict_dumb() -> Self {
+        Self::from("DUMB")
+    }
 }
 
 impl From<&'static str> for IsaId {
-    fn from(id: &'static str) -> Self { Self(RString::from(id)) }
+    fn from(id: &'static str) -> Self {
+        Self(RString::from(id))
+    }
 }
 
 /// Reserved instruction, which equal to [`crate::ExecStep::Fail`].
@@ -70,7 +74,9 @@ impl From<&'static str> for IsaId {
 pub struct ReservedInstr(/** Reserved instruction op code value */ pub(super) u8);
 
 impl Default for ReservedInstr {
-    fn default() -> Self { Self(0xFF) }
+    fn default() -> Self {
+        Self(0xFF)
+    }
 }
 
 /// Complete AluVM ISA.

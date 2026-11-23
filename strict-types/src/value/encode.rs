@@ -40,7 +40,9 @@ pub struct SerializedType<const MAX_LEN: usize>(Confined<Vec<u8>, 0, MAX_LEN>);
 #[doc(hidden)]
 impl<const MAX_LEN: usize> StrictType for SerializedType<MAX_LEN> {
     const STRICT_LIB_NAME: &'static str = "";
-    fn strict_name() -> Option<TypeName> { None }
+    fn strict_name() -> Option<TypeName> {
+        None
+    }
 }
 #[doc(hidden)]
 impl<const MAX_LEN: usize> StrictEncode for SerializedType<MAX_LEN> {

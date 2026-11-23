@@ -109,21 +109,37 @@ impl<Id: SiteId> Instruction<Id> for ReservedInstr {
     type Core = NoExt;
     type Context<'ctx> = ();
 
-    fn is_goto_target(&self) -> bool { false }
+    fn is_goto_target(&self) -> bool {
+        false
+    }
 
-    fn local_goto_pos(&mut self) -> GotoTarget<'_> { GotoTarget::None }
+    fn local_goto_pos(&mut self) -> GotoTarget<'_> {
+        GotoTarget::None
+    }
 
-    fn remote_goto_pos(&mut self) -> Option<&mut Site<Id>> { None }
+    fn remote_goto_pos(&mut self) -> Option<&mut Site<Id>> {
+        None
+    }
 
-    fn src_regs(&self) -> BTreeSet<NoRegs> { none!() }
+    fn src_regs(&self) -> BTreeSet<NoRegs> {
+        none!()
+    }
 
-    fn dst_regs(&self) -> BTreeSet<NoRegs> { none!() }
+    fn dst_regs(&self) -> BTreeSet<NoRegs> {
+        none!()
+    }
 
-    fn op_data_bytes(&self) -> u16 { none!() }
+    fn op_data_bytes(&self) -> u16 {
+        none!()
+    }
 
-    fn ext_data_bytes(&self) -> u16 { none!() }
+    fn ext_data_bytes(&self) -> u16 {
+        none!()
+    }
 
-    fn complexity(&self) -> u64 { u64::MAX }
+    fn complexity(&self) -> u64 {
+        u64::MAX
+    }
 
     fn exec(
         &self,
@@ -196,9 +212,13 @@ impl<Id: SiteId> Instruction<Id> for CtrlInstr<Id> {
         }
     }
 
-    fn src_regs(&self) -> BTreeSet<NoRegs> { none!() }
+    fn src_regs(&self) -> BTreeSet<NoRegs> {
+        none!()
+    }
 
-    fn dst_regs(&self) -> BTreeSet<NoRegs> { none!() }
+    fn dst_regs(&self) -> BTreeSet<NoRegs> {
+        none!()
+    }
 
     fn op_data_bytes(&self) -> u16 {
         match self {

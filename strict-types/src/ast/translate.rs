@@ -38,7 +38,8 @@ pub trait Translate<To: Sized> {
 }
 
 impl<Ref: TypeRef, ToRef: TypeRef> Translate<Ty<ToRef>> for Ty<Ref>
-where Ref: Translate<ToRef>
+where
+    Ref: Translate<ToRef>,
 {
     type Builder = <Ref as Translate<ToRef>>::Builder;
     type Context = <Ref as Translate<ToRef>>::Context;
@@ -67,7 +68,8 @@ where Ref: Translate<ToRef>
 }
 
 impl<Ref: TypeRef, ToRef: TypeRef> Translate<UnionVariants<ToRef>> for UnionVariants<Ref>
-where Ref: Translate<ToRef>
+where
+    Ref: Translate<ToRef>,
 {
     type Builder = <Ref as Translate<ToRef>>::Builder;
     type Context = <Ref as Translate<ToRef>>::Context;
@@ -87,7 +89,8 @@ where Ref: Translate<ToRef>
 }
 
 impl<Ref: TypeRef, ToRef: TypeRef> Translate<NamedFields<ToRef>> for NamedFields<Ref>
-where Ref: Translate<ToRef>
+where
+    Ref: Translate<ToRef>,
 {
     type Builder = <Ref as Translate<ToRef>>::Builder;
     type Context = <Ref as Translate<ToRef>>::Context;
@@ -110,7 +113,8 @@ where Ref: Translate<ToRef>
 }
 
 impl<Ref: TypeRef, ToRef: TypeRef> Translate<UnnamedFields<ToRef>> for UnnamedFields<Ref>
-where Ref: Translate<ToRef>
+where
+    Ref: Translate<ToRef>,
 {
     type Builder = <Ref as Translate<ToRef>>::Builder;
     type Context = <Ref as Translate<ToRef>>::Context;

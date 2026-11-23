@@ -44,9 +44,13 @@ pub struct TypeSymbol {
 }
 
 impl TypeSymbol {
-    pub fn with(id: SemId, fqn: TypeFqn) -> TypeSymbol { TypeSymbol { id, fqn: Some(fqn) } }
+    pub fn with(id: SemId, fqn: TypeFqn) -> TypeSymbol {
+        TypeSymbol { id, fqn: Some(fqn) }
+    }
 
-    pub fn unnamed(id: SemId) -> TypeSymbol { TypeSymbol { id, fqn: None } }
+    pub fn unnamed(id: SemId) -> TypeSymbol {
+        TypeSymbol { id, fqn: None }
+    }
 
     pub fn named(id: SemId, lib: LibName, name: TypeName) -> TypeSymbol {
         TypeSymbol {
@@ -57,7 +61,9 @@ impl TypeSymbol {
 }
 
 impl SemCommit for TypeSymbol {
-    fn sem_commit(&self, hasher: &mut impl CommitConsume) { self.id.sem_commit(hasher); }
+    fn sem_commit(&self, hasher: &mut impl CommitConsume) {
+        self.id.sem_commit(hasher);
+    }
 }
 
 impl TypeRef for TypeSymbol {}
@@ -96,7 +102,9 @@ pub struct SystemBuilder {
 }
 
 impl SystemBuilder {
-    pub fn new() -> SystemBuilder { SystemBuilder::default() }
+    pub fn new() -> SystemBuilder {
+        SystemBuilder::default()
+    }
 
     pub fn import(mut self, lib: TypeLib) -> Result<Self, Error> {
         let dependency = Dependency::from(&lib);
@@ -141,7 +149,9 @@ impl SystemBuilder {
 
     #[allow(clippy::multiple_bound_locations)]
     fn translate_inline<Ref: LibSubref>(&mut self, inline_ty: Ty<Ref>) -> Result<SemId, Error>
-    where Ref: Translate<SemId, Context = (), Builder = SystemBuilder, Error = Error> {
+    where
+        Ref: Translate<SemId, Context = (), Builder = SystemBuilder, Error = Error>,
+    {
         // compute id
         let id = inline_ty.sem_id_unnamed();
         // run for nested types

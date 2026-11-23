@@ -78,11 +78,17 @@ fn _std_sym() -> Result<SymbolicLib, TranspileError> {
         .compile_symbols()
 }
 
-fn _std_stl() -> Result<TypeLib, CompileError> { _std_sym()?.compile() }
+fn _std_stl() -> Result<TypeLib, CompileError> {
+    _std_sym()?.compile()
+}
 
-pub fn std_sym() -> SymbolicLib { _std_sym().expect("invalid strict type Std library") }
+pub fn std_sym() -> SymbolicLib {
+    _std_sym().expect("invalid strict type Std library")
+}
 
-pub fn std_stl() -> TypeLib { _std_stl().expect("invalid strict type Std library") }
+pub fn std_stl() -> TypeLib {
+    _std_stl().expect("invalid strict type Std library")
+}
 
 fn _strict_types_sym() -> Result<SymbolicLib, TranspileError> {
     LibBuilder::with(libname!(STRICT_TYPES_LIB), [std_stl().to_dependency_types()])
@@ -99,7 +105,9 @@ fn _strict_types_sym() -> Result<SymbolicLib, TranspileError> {
         .transpile::<MemoryLayout>()
         .compile_symbols()
 }
-fn _strict_types_stl() -> Result<TypeLib, CompileError> { _strict_types_sym()?.compile() }
+fn _strict_types_stl() -> Result<TypeLib, CompileError> {
+    _strict_types_sym()?.compile()
+}
 
 pub fn strict_types_sym() -> SymbolicLib {
     _strict_types_sym().expect("invalid strict type StrictTypes library")

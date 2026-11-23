@@ -61,11 +61,17 @@ impl Sizing {
         max: u16::MAX as u64,
     };
 
-    pub const fn new(min: u64, max: u64) -> Self { Sizing { min, max } }
+    pub const fn new(min: u64, max: u64) -> Self {
+        Sizing { min, max }
+    }
 
-    pub const fn fixed(len: u64) -> Self { Sizing { min: len, max: len } }
+    pub const fn fixed(len: u64) -> Self {
+        Sizing { min: len, max: len }
+    }
 
-    pub const fn is_fixed(&self) -> bool { self.min == self.max }
+    pub const fn is_fixed(&self) -> bool {
+        self.min == self.max
+    }
 
     pub const fn check(&self, len: usize) -> bool {
         let len = len as u64;
@@ -107,7 +113,9 @@ mod _serde {
 
     impl Serialize for Variant {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where S: Serializer {
+        where
+            S: Serializer,
+        {
             if serializer.is_human_readable() {
                 serializer.serialize_str(&format!("{}:{}", self.name, self.tag))
             } else {
@@ -121,7 +129,9 @@ mod _serde {
 
     impl<'de> Deserialize<'de> for Variant {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where D: Deserializer<'de> {
+        where
+            D: Deserializer<'de>,
+        {
             if deserializer.is_human_readable() {
                 let s = String::deserialize(deserializer)?;
                 let mut split = s.split(':');
@@ -161,7 +171,9 @@ mod _serde {
 }
 
 impl Variant {
-    pub fn named(tag: u8, name: VariantName) -> Variant { Variant { name, tag } }
+    pub fn named(tag: u8, name: VariantName) -> Variant {
+        Variant { name, tag }
+    }
 
     pub fn none() -> Variant {
         Variant {
@@ -178,11 +190,15 @@ impl Variant {
 }
 
 impl PartialEq for Variant {
-    fn eq(&self, other: &Self) -> bool { self.tag == other.tag || self.name == other.name }
+    fn eq(&self, other: &Self) -> bool {
+        self.tag == other.tag || self.name == other.name
+    }
 }
 
 impl PartialOrd for Variant {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> { Some(self.cmp(other)) }
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 impl Hash for Variant {

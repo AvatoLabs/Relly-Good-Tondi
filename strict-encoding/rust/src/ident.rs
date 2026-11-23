@@ -35,19 +35,25 @@ macro_rules! impl_ident_type {
     ($ty:ty) => {
         impl From<$ty> for String {
             #[inline]
-            fn from(ident: $ty) -> String { ident.0.into() }
+            fn from(ident: $ty) -> String {
+                ident.0.into()
+            }
         }
 
         impl From<&'static str> for $ty {
             #[inline]
-            fn from(ident: &'static str) -> Self { Self(RString::from(ident)) }
+            fn from(ident: &'static str) -> Self {
+                Self(RString::from(ident))
+            }
         }
 
         impl TryFrom<String> for $ty {
             type Error = $crate::InvalidRString;
 
             #[inline]
-            fn try_from(s: String) -> Result<Self, Self::Error> { Self::from_str(&s) }
+            fn try_from(s: String) -> Result<Self, Self::Error> {
+                Self::from_str(&s)
+            }
         }
 
         impl ::core::fmt::Debug for $ty {
@@ -58,18 +64,24 @@ macro_rules! impl_ident_type {
 
         impl ::core::borrow::Borrow<str> for $ty {
             #[inline]
-            fn borrow(&self) -> &str { self.as_str() }
+            fn borrow(&self) -> &str {
+                self.as_str()
+            }
         }
 
         impl AsRef<str> for $ty {
             #[inline]
-            fn as_ref(&self) -> &str { self.as_str() }
+            fn as_ref(&self) -> &str {
+                self.as_str()
+            }
         }
 
         impl $ty {
             /// Returns string reference.
             #[inline]
-            pub fn as_str(&self) -> &str { self.0.as_str() }
+            pub fn as_str(&self) -> &str {
+                self.0.as_str()
+            }
         }
     };
 }
@@ -87,10 +99,14 @@ macro_rules! impl_ident_subtype {
         impl $ty {
             /// Converts to identifier name.
             #[inline]
-            pub fn to_ident(&self) -> $crate::Ident { self.clone().into() }
+            pub fn to_ident(&self) -> $crate::Ident {
+                self.clone().into()
+            }
             /// Converts into identifier name.
             #[inline]
-            pub fn into_ident(self) -> $crate::Ident { self.into() }
+            pub fn into_ident(self) -> $crate::Ident {
+                self.into()
+            }
         }
     };
 }

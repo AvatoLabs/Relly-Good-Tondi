@@ -31,14 +31,17 @@ use crate::{CoreConfig, Lib, LibSite, LIB_NAME_ALUVM};
 
 /// Strict type id for the lib-old providing data types from this crate.
 pub const LIB_ID_ALUVM: &str =
-    "stl:t1kptI_t-R8Ei0Wa-e0m53SK-toGi5AC-si8GK5F-MbQp588#reward-accent-swim";
+    "stl:G0ntOiBp-Ic4r1dC-Dm_f7cu-hqC186_-GnOE9fF-IV06JeY#event-parking-papa";
 
 #[allow(clippy::result_large_err)]
 fn _aluvm_stl() -> Result<TypeLib, CompileError> {
-    LibBuilder::with(libname!(LIB_NAME_ALUVM), [
-        strict_types::stl::std_stl().to_dependency_types(),
-        strict_types::stl::strict_types_stl().to_dependency_types(),
-    ])
+    LibBuilder::with(
+        libname!(LIB_NAME_ALUVM),
+        [
+            strict_types::stl::std_stl().to_dependency_types(),
+            strict_types::stl::strict_types_stl().to_dependency_types(),
+        ],
+    )
     .transpile::<LibSite>()
     .transpile::<Lib>()
     .transpile::<CoreConfig>()
@@ -46,7 +49,9 @@ fn _aluvm_stl() -> Result<TypeLib, CompileError> {
 }
 
 /// Generates strict type lib-old providing data types from this crate.
-pub fn aluvm_stl() -> TypeLib { _aluvm_stl().expect("invalid strict type AluVM lib-old") }
+pub fn aluvm_stl() -> TypeLib {
+    _aluvm_stl().expect("invalid strict type AluVM lib-old")
+}
 
 #[cfg(test)]
 mod test {

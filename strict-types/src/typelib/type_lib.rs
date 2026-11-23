@@ -53,7 +53,9 @@ pub struct ExternRef {
 }
 
 impl ExternRef {
-    pub fn with(lib_id: TypeLibId, sem_id: SemId) -> ExternRef { ExternRef { lib_id, sem_id } }
+    pub fn with(lib_id: TypeLibId, sem_id: SemId) -> ExternRef {
+        ExternRef { lib_id, sem_id }
+    }
 }
 
 #[derive(Clone, Eq, PartialEq, Debug, From)]
@@ -151,9 +153,15 @@ pub enum InlineRef2 {
 }
 
 impl TypeRef for InlineRef2 {
-    fn is_compound(&self) -> bool { false }
-    fn is_byte(&self) -> bool { false }
-    fn is_unicode_char(&self) -> bool { false }
+    fn is_compound(&self) -> bool {
+        false
+    }
+    fn is_byte(&self) -> bool {
+        false
+    }
+    fn is_unicode_char(&self) -> bool {
+        false
+    }
 }
 
 impl Display for InlineRef2 {
@@ -218,23 +226,33 @@ pub struct Dependency {
 }
 
 impl Hash for Dependency {
-    fn hash<H: Hasher>(&self, state: &mut H) { self.id.hash(state) }
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.id.hash(state)
+    }
 }
 
 impl PartialEq for Dependency {
-    fn eq(&self, other: &Self) -> bool { self.id == other.id || self.name == other.name }
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id || self.name == other.name
+    }
 }
 
 impl PartialOrd for Dependency {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> { Some(self.cmp(other)) }
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 impl Ord for Dependency {
-    fn cmp(&self, other: &Self) -> Ordering { self.id.cmp(&other.id) }
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.id.cmp(&other.id)
+    }
 }
 
 impl Dependency {
-    pub fn with(id: TypeLibId, name: LibName) -> Self { Dependency { id, name } }
+    pub fn with(id: TypeLibId, name: LibName) -> Self {
+        Dependency { id, name }
+    }
 }
 
 impl From<&TypeLib> for Dependency {
@@ -277,7 +295,9 @@ impl StrictDumb for TypeLib {
 }
 
 impl TypeLib {
-    pub fn to_dependency(&self) -> Dependency { Dependency::with(self.id(), self.name.clone()) }
+    pub fn to_dependency(&self) -> Dependency {
+        Dependency::with(self.id(), self.name.clone())
+    }
 
     pub fn to_dependency_types(&self) -> (Dependency, HashSet<SemId>) {
         let dependency = Dependency::with(self.id(), self.name.clone());

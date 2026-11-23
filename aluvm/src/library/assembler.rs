@@ -43,7 +43,9 @@ pub enum AssemblerError {
 impl Lib {
     /// Assembles a library from the provided instructions by encoding them into bytecode.
     pub fn assemble<Isa>(code: &[Isa]) -> Result<Lib, AssemblerError>
-    where Isa: Instruction<LibId> {
+    where
+        Isa: Instruction<LibId>,
+    {
         let call_sites = code.iter().filter_map(|instr| instr.external_ref());
         let libs_segment = TinyOrdSet::try_from_iter(call_sites)?;
 
@@ -63,7 +65,9 @@ impl Lib {
 
     /// Disassembles the library into a set of instructions.
     pub fn disassemble<Isa>(&self) -> Result<Vec<Isa>, CodeEofError>
-    where Isa: Instruction<LibId> {
+    where
+        Isa: Instruction<LibId>,
+    {
         let mut code = Vec::new();
         let mut reader = Marshaller::with(&self.code, &self.data, &self.libs);
         while !reader.is_eof() {

@@ -44,10 +44,13 @@ struct VariantInfo<Ref: TypeRef> {
 impl<Ref: TypeRef> StrictEncode for UnionVariants<Ref> {
     fn strict_encode<W: TypedWrite>(&self, writer: W) -> io::Result<W> {
         let fields = TinyOrdMap::try_from_iter(self.iter().map(|(variant, ty)| {
-            (variant.tag, VariantInfo {
-                name: variant.name.clone(),
-                ty: ty.clone(),
-            })
+            (
+                variant.tag,
+                VariantInfo {
+                    name: variant.name.clone(),
+                    ty: ty.clone(),
+                },
+            )
         }))
         .expect("guaranteed by Variant type");
         writer.write_newtype::<Self>(&fields)

@@ -92,7 +92,7 @@ impl CallState {
 /// - `expiry`: ISO-8601 datetime string;
 /// - `lock`: Base64-encoded lock script conditions;
 /// - `endpoints`: comma-separated URLs with the endpoints for uploading a resulting
-///   deeds/consignment stream.
+///   contract history stream.
 ///
 /// ## Fragment
 ///
@@ -148,51 +148,17 @@ impl<Q: Display + FromStr, A> CallRequest<CallScope<Q>, A> {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Layer1 {
     pub consensus: Consensus,
-    pub testnet: bool,
 }
 
-impl Layer1 {
-    pub fn new(consensus: Consensus, testnet: bool) -> Self { Self { consensus, testnet } }
-}
-
-#[allow(deprecated)]
 impl Display for Layer1 {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let s = match (self.consensus, self.testnet) {
-            (Consensus::None, false) => "~",
-            (Consensus::None, true) => "test",
-            (Consensus::Tondi, _) => "tondi",
-            (Consensus::TondiTestnet, _) => "tondi0",
-            (Consensus::LegacyPow, false) => "lg",
-            (Consensus::LegacyPow, true) => "tg",
-            (Consensus::LegacyFederation, false) => "lf",
-            (Consensus::LegacyFederation, true) => "tf",
-            (Consensus::Prime, false) => "pr",
-            (Consensus::Prime, true) => "tp",
-        };
-        f.write_str(s)
-    }
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result { self.consensus.fmt(f) }
 }
 
-#[allow(deprecated)]
 impl FromStr for Layer1 {
     type Err = ParseLayer1Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let s = s.to_lowercase();
-        Ok(match s.as_str() {
-            "~" => Layer1::new(Consensus::None, false),
-            "test" => Layer1::new(Consensus::None, true),
-            "tondi" => Layer1::new(Consensus::Tondi, false),
-            "tondi0" => Layer1::new(Consensus::TondiTestnet, true),
-            "lg" => Layer1::new(Consensus::LegacyPow, false),
-            "tg" => Layer1::new(Consensus::LegacyPow, true),
-            "lf" => Layer1::new(Consensus::LegacyFederation, false),
-            "tf" => Layer1::new(Consensus::LegacyFederation, true),
-            "pr" => Layer1::new(Consensus::Prime, false),
-            "tp" => Layer1::new(Consensus::Prime, true),
-            _ => return Err(ParseLayer1Error),
-        })
+        Ok(Self { consensus: s.parse().map_err(|_| ParseLayer1Error)? })
     }
 }
 

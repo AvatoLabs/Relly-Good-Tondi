@@ -1,0 +1,85 @@
+# This project is now part of the RGT-X
+# See the root Cargo.toml for workspace configuration
+
+[package]
+name = "rgt-std"
+description = "Standard Library for RGT smart contracts"
+version = "0.12.0-rc.3"
+keywords = ["tondi", "rgt", "smart-contracts"]
+categories = ["cryptography::cryptocurrencies"]
+authors = ["Dr Maxim Orlovsky <orlovsky@lnp-bp.org>"]
+rust-version = "1.85.0"
+edition = "2021"
+license = "Apache-2.0"
+readme = "README.md"
+
+[[bin]]
+name = "rgt-stl"
+required-features = ["stl"]
+
+[lib]
+name = "rgt"
+crate-type = ["cdylib", "rlib"] # We need this for WASM
+
+[dependencies]
+amplify = { workspace = true }
+strict_encoding = { workspace = true }
+strict_types = { workspace = true }
+commit_verify = { workspace = true }
+single_use_seals = { workspace = true }
+aora = { workspace = true }
+binfile = { workspace = true, optional = true }
+hypersonic = "0.12.0"
+rgt-core = { workspace = true }
+rgt-invoice = { workspace = true }
+indexmap = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true, optional = true }
+serde_with = { version = "1.14", optional = true }
+
+[dev-dependencies]
+tempfile = "3"
+tondi-vm.workspace = true
+rand = { workspace = true }
+rgt-persist-fs = { workspace = true }
+
+[features]
+default = ["std"]
+all = ["std", "binfile", "uri", "stl", "serde", "async"]
+std = ["rgt-invoice/std", "indexmap/std"]
+async = []
+
+
+uri = ["rgt-invoice/uri"]
+binfile = ["std", "dep:binfile", "hypersonic/binfile", "aora/file-strict"]
+
+stl = ["rgt-core/stl", "commit_verify/stl", "hypersonic/stl", "strict_types/armor"]
+
+serde = [
+    "std",
+    "dep:serde",
+    "dep:serde_with",
+    "amplify/serde",
+    "strict_encoding/serde",
+    "strict_types/serde",
+    "commit_verify/serde",
+    "hypersonic/serde",
+    "rgt-core/serde",
+    "rgt-invoice/serde",
+    "chrono/serde"
+]
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2"
+rand = { version = "0.9.1", optional = true }
+getrandom = { version = "0.3", features = ["wasm_js"] }
+getrandom2 = { package = "getrandom", version = "0.2", features = ["js"] }
+
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+wasm-bindgen-test = "0.3"
+
+[package.metadata.docs.rs]
+features = ["all"]
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(coverage_nightly)'] }

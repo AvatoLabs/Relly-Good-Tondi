@@ -46,14 +46,18 @@ pub struct IntoIter<Ref: TypeRef> {
 }
 
 impl<Ref: TypeRef> From<Ty<Ref>> for IntoIter<Ref> {
-    fn from(ty: Ty<Ref>) -> Self { IntoIter { ty, pos: 0 } }
+    fn from(ty: Ty<Ref>) -> Self {
+        IntoIter { ty, pos: 0 }
+    }
 }
 
 impl<Ref: TypeRef> IntoIterator for Ty<Ref> {
     type Item = Ref;
     type IntoIter = IntoIter<Ref>;
 
-    fn into_iter(self) -> Self::IntoIter { IntoIter::from(self) }
+    fn into_iter(self) -> Self::IntoIter {
+        IntoIter::from(self)
+    }
 }
 
 impl<Ref: TypeRef> Iterator for IntoIter<Ref> {
@@ -72,26 +76,36 @@ pub struct Iter<'ty, Ref: TypeRef> {
 }
 
 impl<Ref: TypeRef> Ty<Ref> {
-    pub fn type_refs(&self) -> Iter<'_, Ref> { Iter::from(self) }
+    pub fn type_refs(&self) -> Iter<'_, Ref> {
+        Iter::from(self)
+    }
 }
 
 impl<Ref: TypeRef> Ty<Ref> {
-    pub fn iter(&self) -> Iter<'_, Ref> { self.into_iter() }
+    pub fn iter(&self) -> Iter<'_, Ref> {
+        self.into_iter()
+    }
 }
 
 impl<'ty, Ref: TypeRef> From<&'ty Ty<Ref>> for Iter<'ty, Ref> {
-    fn from(ty: &'ty Ty<Ref>) -> Self { Iter { ty, pos: 0 } }
+    fn from(ty: &'ty Ty<Ref>) -> Self {
+        Iter { ty, pos: 0 }
+    }
 }
 
 impl<'ty, Ref: TypeRef> From<&'ty Ref> for Iter<'ty, Ref> {
-    fn from(ty: &'ty Ref) -> Self { Self::from(ty.as_ty().unwrap_or(&Ty::UNIT)) }
+    fn from(ty: &'ty Ref) -> Self {
+        Self::from(ty.as_ty().unwrap_or(&Ty::UNIT))
+    }
 }
 
 impl<'ty, Ref: TypeRef> IntoIterator for &'ty Ty<Ref> {
     type Item = (&'ty Ref, Option<ItemCase>);
     type IntoIter = Iter<'ty, Ref>;
 
-    fn into_iter(self) -> Self::IntoIter { Iter::from(self) }
+    fn into_iter(self) -> Self::IntoIter {
+        Iter::from(self)
+    }
 }
 
 impl<'ty, Ref: TypeRef + 'ty> Iterator for Iter<'ty, Ref> {

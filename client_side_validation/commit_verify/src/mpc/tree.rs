@@ -69,7 +69,9 @@ pub struct MerkleTree {
 }
 
 impl Proof for MerkleTree {
-    fn matches(&self, other: &Self) -> bool { self.commit_id() == other.commit_id() }
+    fn matches(&self, other: &Self) -> bool {
+        self.commit_id() == other.commit_id()
+    }
 }
 
 impl MerkleTree {
@@ -90,7 +92,9 @@ impl MerkleTree {
 impl Conceal for MerkleTree {
     type Concealed = MerkleConcealed;
 
-    fn conceal(&self) -> Self::Concealed { MerkleBlock::from(self.clone()).conceal() }
+    fn conceal(&self) -> Self::Concealed {
+        MerkleBlock::from(self.clone()).conceal()
+    }
 }
 
 mod commit {
@@ -185,8 +189,8 @@ mod commit {
 pub(super) fn protocol_id_pos(protocol_id: ProtocolId, cofactor: u16, depth: u5) -> u32 {
     let width = 2u32.pow(depth.to_u8() as u32);
     debug_assert_ne!(width, 0);
-    let rem = u256::from_le_bytes((*protocol_id).into_inner()) %
-        u256::from(width.saturating_sub(cofactor as u32).max(1) as u64);
+    let rem = u256::from_le_bytes((*protocol_id).into_inner())
+        % u256::from(width.saturating_sub(cofactor as u32).max(1) as u64);
     rem.low_u64() as u32
 }
 
@@ -198,20 +202,30 @@ impl MerkleTree {
 
     /// Computes the maximum possible width of the MPC Merkle tree, equal to `2
     /// ^ depth`.
-    pub fn width_limit(&self) -> u32 { 2u32.pow(self.depth.to_u8() as u32) }
+    pub fn width_limit(&self) -> u32 {
+        2u32.pow(self.depth.to_u8() as u32)
+    }
 
     /// Computes the factored width of the MPC Merkle tree, equal to `2 ^ depth
     /// - cofactor`.
-    pub fn factored_width(&self) -> u32 { self.width_limit() - self.cofactor as u32 }
+    pub fn factored_width(&self) -> u32 {
+        self.width_limit() - self.cofactor as u32
+    }
 
     /// Get the depth of the MPC Merkle tree.
-    pub fn depth(&self) -> u5 { self.depth }
+    pub fn depth(&self) -> u5 {
+        self.depth
+    }
 
     /// Get the cofactor of the MPC Merkle tree.
-    pub fn cofactor(&self) -> u16 { self.cofactor }
+    pub fn cofactor(&self) -> u16 {
+        self.cofactor
+    }
 
     /// Get the value of the entropy used in the MPC Merkle tree construct.
-    pub fn entropy(&self) -> u64 { self.entropy }
+    pub fn entropy(&self) -> u64 {
+        self.entropy
+    }
 
     /// Convert this MPC Merkle tree into an iterator over items and proofs of
     /// their inclusion.
@@ -355,7 +369,7 @@ mod test {
         let msgs = make_random_messages(9);
         let tree = make_random_tree(&msgs);
         assert!(tree.depth() > u5::with(3));
-        assert!(tree.factored_width() > 9);
+        assert!(tree.factored_width() as usize >= msgs.len());
         let mut set = BTreeSet::<u32>::new();
         for (pid, msg) in msgs {
             let pos = tree.protocol_id_pos(pid);

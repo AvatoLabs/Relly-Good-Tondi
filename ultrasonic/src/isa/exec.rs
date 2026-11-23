@@ -99,13 +99,21 @@ impl<Id: SiteId> Instruction<Id> for UsonicInstr {
     type Core = UsonicCore;
     type Context<'ctx> = VmContext<'ctx>;
 
-    fn is_goto_target(&self) -> bool { false }
+    fn is_goto_target(&self) -> bool {
+        false
+    }
 
-    fn local_goto_pos(&mut self) -> GotoTarget<'_> { GotoTarget::None }
+    fn local_goto_pos(&mut self) -> GotoTarget<'_> {
+        GotoTarget::None
+    }
 
-    fn remote_goto_pos(&mut self) -> Option<&mut Site<Id>> { None }
+    fn remote_goto_pos(&mut self) -> Option<&mut Site<Id>> {
+        None
+    }
 
-    fn src_regs(&self) -> BTreeSet<RegE> { none!() }
+    fn src_regs(&self) -> BTreeSet<RegE> {
+        none!()
+    }
 
     fn dst_regs(&self) -> BTreeSet<RegE> {
         match *self {
@@ -437,19 +445,18 @@ mod test {
         let state = StateValue::Single { first: fe256::from(VALUE) };
         let context = VmContext {
             witness: StateValue::None,
-            destructible_input: &[(strict_dumb!(), StateCell {
-                data: state,
-                auth: strict_dumb!(),
-                lock: None,
-            })],
+            destructible_input: &[(
+                strict_dumb!(),
+                StateCell { data: state, auth: strict_dumb!(), lock: None },
+            )],
             immutable_input: &[state],
             destructible_output: &[StateCell { data: state, auth: strict_dumb!(), lock: None }],
             immutable_output: &[StateData { value: state, raw: None }],
         };
-        let mut vm_main =
-            Vm::<Instr<LibId>>::with(CoreConfig { halt: true, complexity_lim: None }, GfaConfig {
-                field_order: FIELD_ORDER_SECP,
-            });
+        let mut vm_main = Vm::<Instr<LibId>>::with(
+            CoreConfig { halt: true, complexity_lim: None },
+            GfaConfig { field_order: FIELD_ORDER_SECP },
+        );
         let resolver = |_: LibId| Some(&lib);
         let status = vm_main.exec(LibSite::new(lib.lib_id(), 0), &context, resolver);
         assert_eq!(status, Status::Ok);

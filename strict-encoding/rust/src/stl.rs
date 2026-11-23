@@ -64,7 +64,9 @@ pub enum InvalidRString {
 }
 
 impl<O> From<FromAsciiError<O>> for InvalidRString {
-    fn from(_: FromAsciiError<O>) -> Self { InvalidRString::NonAsciiChar }
+    fn from(_: FromAsciiError<O>) -> Self {
+        InvalidRString::NonAsciiChar
+    }
 }
 
 pub trait RestrictedCharSet:
@@ -89,26 +91,34 @@ impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: u
     for RString<C1, C, MIN, MAX>
 {
     type Target = AsciiString;
-    fn deref(&self) -> &Self::Target { self.s.as_unconfined() }
+    fn deref(&self) -> &Self::Target {
+        self.s.as_unconfined()
+    }
 }
 
 impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: usize> AsRef<[u8]>
     for RString<C1, C, MIN, MAX>
 {
-    fn as_ref(&self) -> &[u8] { self.s.as_bytes() }
+    fn as_ref(&self) -> &[u8] {
+        self.s.as_bytes()
+    }
 }
 
 impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: usize> AsRef<str>
     for RString<C1, C, MIN, MAX>
 {
     #[inline]
-    fn as_ref(&self) -> &str { self.s.as_str() }
+    fn as_ref(&self) -> &str {
+        self.s.as_str()
+    }
 }
 
 impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: usize> Borrow<str>
     for RString<C1, C, MIN, MAX>
 {
-    fn borrow(&self) -> &str { self.s.as_str() }
+    fn borrow(&self) -> &str {
+        self.s.as_str()
+    }
 }
 
 impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: usize> FromStr
@@ -116,7 +126,9 @@ impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: u
 {
     type Err = InvalidRString;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> { Self::try_from(s.as_bytes()) }
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::try_from(s.as_bytes())
+    }
 }
 
 impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: usize>
@@ -136,7 +148,9 @@ impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: u
 {
     type Error = InvalidRString;
 
-    fn try_from(s: String) -> Result<Self, Self::Error> { Self::try_from(s.as_bytes()) }
+    fn try_from(s: String) -> Result<Self, Self::Error> {
+        Self::try_from(s.as_bytes())
+    }
 }
 
 impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: usize>
@@ -144,7 +158,9 @@ impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: u
 {
     type Error = InvalidRString;
 
-    fn try_from(ascii: AsciiString) -> Result<Self, InvalidRString> { ascii.as_bytes().try_into() }
+    fn try_from(ascii: AsciiString) -> Result<Self, InvalidRString> {
+        ascii.as_bytes().try_into()
+    }
 }
 
 impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: usize>
@@ -152,7 +168,9 @@ impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: u
 {
     type Error = InvalidRString;
 
-    fn try_from(vec: Vec<u8>) -> Result<Self, InvalidRString> { vec.as_slice().try_into() }
+    fn try_from(vec: Vec<u8>) -> Result<Self, InvalidRString> {
+        vec.as_slice().try_into()
+    }
 }
 
 impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: usize> TryFrom<&[u8]>
@@ -200,7 +218,9 @@ impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: u
 impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: usize>
     From<RString<C1, C, MIN, MAX>> for String
 {
-    fn from(s: RString<C1, C, MIN, MAX>) -> Self { s.s.release().into() }
+    fn from(s: RString<C1, C, MIN, MAX>) -> Self {
+        s.s.release().into()
+    }
 }
 
 impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: usize> Debug
@@ -217,7 +237,9 @@ impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: u
 impl<C1: RestrictedCharSet, C: RestrictedCharSet, const MIN: usize, const MAX: usize> Display
     for RString<C1, C, MIN, MAX>
 {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result { Display::fmt(&self.s, f) }
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(&self.s, f)
+    }
 }
 
 #[cfg(feature = "serde")]
@@ -231,7 +253,9 @@ mod _serde {
         Deserialize<'de> for RString<C1, C, MIN, MAX>
     {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where D: Deserializer<'de> {
+        where
+            D: Deserializer<'de>,
+        {
             let ascii = AsciiString::deserialize(deserializer)?;
             Self::try_from(ascii).map_err(D::Error::custom)
         }
@@ -249,7 +273,9 @@ pub enum Bool {
 }
 
 impl From<&bool> for Bool {
-    fn from(value: &bool) -> Self { Bool::from(*value) }
+    fn from(value: &bool) -> Self {
+        Bool::from(*value)
+    }
 }
 impl From<bool> for Bool {
     fn from(value: bool) -> Self {
@@ -260,7 +286,9 @@ impl From<bool> for Bool {
     }
 }
 impl From<&Bool> for bool {
-    fn from(value: &Bool) -> Self { bool::from(*value) }
+    fn from(value: &Bool) -> Self {
+        bool::from(*value)
+    }
 }
 impl From<Bool> for bool {
     fn from(value: Bool) -> Self {
@@ -273,7 +301,9 @@ impl From<Bool> for bool {
 
 impl StrictType for bool {
     const STRICT_LIB_NAME: &'static str = LIB_NAME_STD;
-    fn strict_name() -> Option<TypeName> { Some(tn!("Bool")) }
+    fn strict_name() -> Option<TypeName> {
+        Some(tn!("Bool"))
+    }
 }
 impl StrictEncode for bool {
     fn strict_encode<W: TypedWrite>(&self, writer: W) -> io::Result<W> {
@@ -354,7 +384,9 @@ impl_u!(U7, u7, _0 _1 _2 _3 _4 _5 _6 _7 _8 _9
 pub struct AsciiSym(AsciiChar);
 
 impl From<AsciiSym> for u8 {
-    fn from(value: AsciiSym) -> Self { value.0.as_byte() }
+    fn from(value: AsciiSym) -> Self {
+        value.0.as_byte()
+    }
 }
 
 impl TryFrom<u8> for AsciiSym {
@@ -366,7 +398,9 @@ impl TryFrom<u8> for AsciiSym {
 }
 impl StrictType for AsciiSym {
     const STRICT_LIB_NAME: &'static str = LIB_NAME_STD;
-    fn strict_name() -> Option<TypeName> { Some(tn!("Ascii")) }
+    fn strict_name() -> Option<TypeName> {
+        Some(tn!("Ascii"))
+    }
 }
 impl StrictSum for AsciiSym {
     const ALL_VARIANTS: &'static [(u8, &'static str)] = &[
@@ -509,7 +543,9 @@ impl StrictSum for AsciiSym {
 }
 impl StrictEnum for AsciiSym {}
 impl StrictEncode for AsciiSym {
-    fn strict_encode<W: TypedWrite>(&self, writer: W) -> io::Result<W> { writer.write_enum(*self) }
+    fn strict_encode<W: TypedWrite>(&self, writer: W) -> io::Result<W> {
+        writer.write_enum(*self)
+    }
 }
 impl StrictDecode for AsciiSym {
     fn strict_decode(reader: &mut impl TypedRead) -> Result<Self, DecodeError> {
@@ -525,7 +561,9 @@ impl StrictDecode for AsciiSym {
 pub struct AsciiPrintable(AsciiChar);
 
 impl From<AsciiPrintable> for u8 {
-    fn from(value: AsciiPrintable) -> Self { value.0.as_byte() }
+    fn from(value: AsciiPrintable) -> Self {
+        value.0.as_byte()
+    }
 }
 
 impl TryFrom<u8> for AsciiPrintable {
@@ -650,7 +688,9 @@ impl StrictSum for AsciiPrintable {
 }
 impl StrictEnum for AsciiPrintable {}
 impl StrictEncode for AsciiPrintable {
-    fn strict_encode<W: TypedWrite>(&self, writer: W) -> io::Result<W> { writer.write_enum(*self) }
+    fn strict_encode<W: TypedWrite>(&self, writer: W) -> io::Result<W> {
+        writer.write_enum(*self)
+    }
 }
 impl StrictDecode for AsciiPrintable {
     fn strict_decode(reader: &mut impl TypedRead) -> Result<Self, DecodeError> {

@@ -1,0 +1,3 @@
+# RocksDB 8.x requires an explicit cstdint include with newer GNU C++ headers.
+[env]
+CXXFLAGS_x86_64_unknown_linux_gnu = { value = "-include cstdint", force = false }

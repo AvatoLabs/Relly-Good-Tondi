@@ -34,7 +34,9 @@ impl UsonicCore {
     }
 
     /// Get the current index for a destructible input.
-    pub fn get_ui_inro(&self) -> u16 { self.ui[IoCat::IN_RO.index()] }
+    pub fn get_ui_inro(&self) -> u16 {
+        self.ui[IoCat::IN_RO.index()]
+    }
 
     /// Loads next [`StateValue`] (basing on iterator position from `UI` indexes) of a given
     /// category into the `EA`-`ED` registers, increasing `UI` iterator count.
@@ -78,8 +80,12 @@ impl UsonicCore {
     }
 
     /// Sets `UI` register for the destructible input to point at a specific input index.
-    pub fn set_inro_index(&mut self, index: u16) { self.ui[IoCat::IN_RO.index()] = index; }
+    pub fn set_inro_index(&mut self, index: u16) {
+        self.ui[IoCat::IN_RO.index()] = index;
+    }
 
     /// Reset a value (set to zero) of the `UI` register.
-    pub fn reset(&mut self, cat: IoCat) { self.ui[cat.index()] = 0; }
+    pub fn reset(&mut self, cat: IoCat) {
+        self.ui[cat.index()] = 0;
+    }
 }

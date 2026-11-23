@@ -71,9 +71,13 @@ impl<R: io::Read> ConfinedReader<R> {
         }
     }
 
-    pub fn count(&self) -> usize { self.count }
+    pub fn count(&self) -> usize {
+        self.count
+    }
 
-    pub fn unconfine(self) -> R { self.reader }
+    pub fn unconfine(self) -> R {
+        self.reader
+    }
 }
 
 impl<R: io::Read> io::Read for ConfinedReader<R> {
@@ -92,8 +96,12 @@ impl<R: io::Read> io::Read for ConfinedReader<R> {
 pub struct StreamReader<R: io::Read>(ConfinedReader<R>);
 
 impl<R: io::Read> StreamReader<R> {
-    pub fn new<const MAX: usize>(inner: R) -> Self { Self(ConfinedReader::with(MAX, inner)) }
-    pub fn unconfine(self) -> R { self.0.unconfine() }
+    pub fn new<const MAX: usize>(inner: R) -> Self {
+        Self(ConfinedReader::with(MAX, inner))
+    }
+    pub fn unconfine(self) -> R {
+        self.0.unconfine()
+    }
 }
 
 impl<T: AsRef<[u8]>> StreamReader<io::Cursor<T>> {
@@ -119,12 +127,18 @@ impl<R: io::Read> ReadRaw for StreamReader<R> {
 }
 
 impl<T: AsRef<[u8]>> StreamReader<io::Cursor<T>> {
-    pub fn in_memory<const MAX: usize>(data: T) -> Self { Self::new::<MAX>(io::Cursor::new(data)) }
-    pub fn into_cursor(self) -> io::Cursor<T> { self.0.unconfine() }
+    pub fn in_memory<const MAX: usize>(data: T) -> Self {
+        Self::new::<MAX>(io::Cursor::new(data))
+    }
+    pub fn into_cursor(self) -> io::Cursor<T> {
+        self.0.unconfine()
+    }
 }
 
 impl StreamReader<ReadCounter> {
-    pub fn counter<const MAX: usize>() -> Self { Self::new::<MAX>(ReadCounter::default()) }
+    pub fn counter<const MAX: usize>() -> Self {
+        Self::new::<MAX>(ReadCounter::default())
+    }
 }
 
 #[derive(Clone, Debug, From)]
@@ -134,30 +148,42 @@ impl<T: AsRef<[u8]>> StrictReader<StreamReader<io::Cursor<T>>> {
     pub fn in_memory<const MAX: usize>(data: T) -> Self {
         Self(StreamReader::in_memory::<MAX>(data))
     }
-    pub fn into_cursor(self) -> io::Cursor<T> { self.0.into_cursor() }
+    pub fn into_cursor(self) -> io::Cursor<T> {
+        self.0.into_cursor()
+    }
 }
 
 impl StrictReader<StreamReader<ReadCounter>> {
-    pub fn counter<const MAX: usize>() -> Self { Self(StreamReader::counter::<MAX>()) }
+    pub fn counter<const MAX: usize>() -> Self {
+        Self(StreamReader::counter::<MAX>())
+    }
 }
 
 impl<R: ReadRaw> StrictReader<R> {
-    pub fn with(reader: R) -> Self { Self(reader) }
+    pub fn with(reader: R) -> Self {
+        Self(reader)
+    }
 
-    pub fn unbox(self) -> R { self.0 }
+    pub fn unbox(self) -> R {
+        self.0
+    }
 }
 
 impl<R: ReadRaw> TypedRead for StrictReader<R> {
     type TupleReader<'parent>
         = TupleReader<'parent, R>
-    where Self: 'parent;
+    where
+        Self: 'parent;
     type StructReader<'parent>
         = StructReader<'parent, R>
-    where Self: 'parent;
+    where
+        Self: 'parent;
     type UnionReader = Self;
     type RawReader = R;
 
-    unsafe fn raw_reader(&mut self) -> &mut Self::RawReader { &mut self.0 }
+    unsafe fn raw_reader(&mut self) -> &mut Self::RawReader {
+        &mut self.0
+    }
 
     fn read_union<T: StrictUnion>(
         &mut self,
@@ -171,7 +197,9 @@ impl<R: ReadRaw> TypedRead for StrictReader<R> {
     }
 
     fn read_enum<T: StrictEnum>(&mut self) -> Result<T, DecodeError>
-    where u8: From<T> {
+    where
+        u8: From<T>,
+    {
         let name = T::strict_name().unwrap_or_else(|| tn!("__unnamed"));
         let tag = u8::strict_decode(self)?;
         T::try_from(tag).map_err(|_| DecodeError::EnumTagNotKnown(name.to_string(), tag))
@@ -259,10 +287,12 @@ impl<R: ReadRaw> ReadStruct for StructReader<'_, R> {
 impl<R: ReadRaw> ReadUnion for StrictReader<R> {
     type TupleReader<'parent>
         = TupleReader<'parent, R>
-    where Self: 'parent;
+    where
+        Self: 'parent;
     type StructReader<'parent>
         = StructReader<'parent, R>
-    where Self: 'parent;
+    where
+        Self: 'parent;
 
     fn read_tuple<'parent, 'me, T: StrictSum>(
         &'me mut self,

@@ -1,0 +1,75 @@
+{-
+  Id: stl:HdamQQhH-R7G37Ac-P7qFs46-QnmMMJy-bZrEeg~-2aAEiHI#member-modular-frank
+  Name: RgtNft
+  Version: 0.12.0
+  RgtNft smart contract interface
+  Author: Dr Maxim Orlovsky <orlovsky@ubideco.org>
+  Copyright (C) 2019-2025 RGB Consortium members & contributors.
+                          All rights reserved.
+  License: Apache-2.0
+-}
+
+@context
+typelib RgtNft
+
+import RgtTondiV10#puma-parent-lunar
+  use NoteSeal#observe-info-hamlet
+  use NoteTxid#micro-marion-tribal
+
+import RGTContract#elite-detect-complex
+  use ProofOfReserves#alarm-process-vanilla
+  use AssetName#edition-congo-snake
+
+import Std#sister-triton-cricket
+  use AlphaSmall#subject-open-virus
+  use AsciiPrintable#valid-house-fame
+
+
+@mnemonic(declare-halt-virus)
+data Attachment        : mime MediaType, digest [Byte ^ 32]
+
+@mnemonic(fabric-sultan-bicycle)
+data EmbeddedMedia     : mime MediaType, data [Byte]
+
+@mnemonic(harmony-gondola-orlando)
+data MediaRegName      : Std.AlphaSmall, [MimeChar ^ ..0x3f]
+
+@mnemonic(spray-satire-orion)
+data MediaType         : type MediaRegName
+                       , subtype MediaRegName?
+                       , charset MediaRegName?
+
+@mnemonic(fast-cycle-turbo)
+data MimeChar          : excl#33 | hash#35 | dollar | amp#38
+                       | plus#43 | dash#45 | dot | zero#48
+                       | one | two | three | four
+                       | five | six | seven | eight
+                       | nine | caret#94 | lodash | a#97
+                       | b | c | d | e
+                       | f | g | h | i
+                       | j | k | l | m
+                       | n | o | p | q
+                       | r | s | t | u
+                       | v | w | x | y
+                       | z
+
+
+@mnemonic(urban-group-puzzle)
+data Nft               : tokenNo TokenNo, fractions TokenFractions
+
+@mnemonic(voodoo-iris-enjoy)
+data NftSpec           : name RGTContract.AssetName?
+                       , embedded EmbeddedMedia
+                       , external Attachment?
+                       , reserves RGTContract.ProofOfReserves?
+
+@mnemonic(indigo-life-symbol)
+data OwnedNft          : tokenNo TokenNo, fractions TokenFractions
+
+@mnemonic(avatar-toyota-photo)
+data TokenFractions    : U64
+
+@mnemonic(exodus-legend-adam)
+data TokenNo           : U32
+
+

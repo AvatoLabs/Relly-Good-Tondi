@@ -12,7 +12,7 @@
 
 -- Contract Codex
 
-commitment CodexId: hasher SHA256, tagged urn:tondi:sonic:codex#2025-01-01
+commitment CodexId: hasher BLAKE3, tagged urn:tondi:sonic:codex#2025-01-01
   serialized Codex
 
 rec Codex
@@ -37,7 +37,7 @@ rec Codex
 
 -- Contract Issue
 
-commitment ContractId: hasher SHA256, tagged urn:tondi:sonic:contract#2025-01-01
+commitment ContractId: hasher BLAKE3, tagged urn:tondi:sonic:contract#2025-01-01
   serialized ReservedBytes1
   serialized ContractMeta
   serialized CodexId
@@ -47,7 +47,7 @@ rec Issue
   bytes version: len 1, aka ReservedBytes1
   rec meta: ContractMeta
     enum testnet: Bool, false 0, true 1
-    enum consensus: Consensus, none 0, legacyPow 16, legacyFederation 17, prime 32, tondi 48, tondiTestnet 49
+    char consensus: Consensus, tondi 48, tondiTestnet 49
     is timestamp: I64
     bytes features: len 6, aka ReservedBytes6
     union name: ContractName
@@ -142,7 +142,7 @@ rec Issue
 
 -- Contract Genesis
 
-commitment Opid: hasher SHA256, tagged urn:tondi:ultrasonic:operation#2025-01-01
+commitment Opid: hasher BLAKE3, tagged urn:tondi:ultrasonic:operation#2025-01-01
   serialized ReservedBytes1
   serialized ContractId
   serialized U16
@@ -223,7 +223,7 @@ rec Genesis
 
 -- Contract Operation
 
-commitment Opid: hasher SHA256, tagged urn:tondi:ultrasonic:operation#2025-01-01
+commitment Opid: hasher BLAKE3, tagged urn:tondi:ultrasonic:operation#2025-01-01
   serialized ReservedBytes1
   serialized ContractId
   serialized U16
@@ -338,4 +338,3 @@ rec Operation
           is third: U256, aka Fe256
           is fourth: U256, aka Fe256
         bytes some: len 0..MAX16, option, wrapped, aka RawData, tag 1
-

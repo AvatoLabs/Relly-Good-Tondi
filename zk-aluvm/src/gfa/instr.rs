@@ -231,7 +231,9 @@ impl From<u2> for ConstVal {
 impl ConstVal {
     /// Get a 2-bit representation of the constant value.
     #[inline]
-    pub const fn to_u2(self) -> u2 { u2::with(self as u8) }
+    pub const fn to_u2(self) -> u2 {
+        u2::with(self as u8)
+    }
 
     /// Get a finite field element corresponding to the constant.
     ///
@@ -304,7 +306,9 @@ impl From<u3> for Bits {
 impl Bits {
     /// Get a 3-bit representation of the bit dimension variant.
     #[inline]
-    pub const fn to_u3(self) -> u3 { u3::with(self as u8) }
+    pub const fn to_u3(self) -> u3 {
+        u3::with(self as u8)
+    }
 
     /// Construct a dimension variant a bit out of bit length.
     ///

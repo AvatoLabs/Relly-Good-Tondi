@@ -433,7 +433,7 @@ mod tests {
             *self
                 .0
                 .resolve(name)
-                .unwrap_or_else(|| panic!("type '{name}' is absent in RGB21 type library"))
+                .unwrap_or_else(|| panic!("type '{name}' is absent in RgtNft type library"))
         }
     }
 

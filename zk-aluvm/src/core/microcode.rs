@@ -30,7 +30,9 @@ use crate::{fe256, GfaCore, RegE};
 /// Microcode for finite field arithmetics.
 impl GfaCore {
     /// Get value of the field order register (`FQ`).
-    pub fn fq(&self) -> u256 { self.fq }
+    pub fn fq(&self) -> u256 {
+        self.fq
+    }
 
     /// Test whether the register has a value, returning a status.
     ///

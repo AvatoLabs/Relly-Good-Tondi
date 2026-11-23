@@ -50,9 +50,15 @@ pub fn type_name<T>() -> String {
 pub struct VariantError<V: Debug + Display>(pub Option<String>, pub V);
 
 impl<V: Debug + Display> VariantError<V> {
-    pub fn with<T>(val: V) -> Self { VariantError(Some(type_name::<T>()), val) }
-    pub fn typed(name: impl Into<String>, val: V) -> Self { VariantError(Some(name.into()), val) }
-    pub fn untyped(val: V) -> Self { VariantError(None, val) }
+    pub fn with<T>(val: V) -> Self {
+        VariantError(Some(type_name::<T>()), val)
+    }
+    pub fn typed(name: impl Into<String>, val: V) -> Self {
+        VariantError(Some(name.into()), val)
+    }
+    pub fn untyped(val: V) -> Self {
+        VariantError(None, val)
+    }
 }
 
 pub trait StrictDumb: Sized {
@@ -60,14 +66,19 @@ pub trait StrictDumb: Sized {
 }
 
 impl<T> StrictDumb for T
-where T: StrictType + Default
+where
+    T: StrictType + Default,
 {
-    fn strict_dumb() -> T { T::default() }
+    fn strict_dumb() -> T {
+        T::default()
+    }
 }
 
 pub trait StrictType: Sized {
     const STRICT_LIB_NAME: &'static str;
-    fn strict_name() -> Option<TypeName> { Some(tn!(type_name::<Self>())) }
+    fn strict_name() -> Option<TypeName> {
+        Some(tn!(type_name::<Self>()))
+    }
 }
 
 impl<T: StrictType> StrictType for &T {
@@ -241,5 +252,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn name_derivation() { assert_eq!(Option::<TinyVec<u8>>::strict_name(), None) }
+    fn name_derivation() {
+        assert_eq!(Option::<TinyVec<u8>>::strict_name(), None)
+    }
 }

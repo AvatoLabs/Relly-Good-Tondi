@@ -61,19 +61,27 @@ impl DisplayBaid64 for LibId {
     const PREFIX: bool = true;
     const EMBED_CHECKSUM: bool = false;
     const MNEMONIC: bool = true;
-    fn to_baid64_payload(&self) -> [u8; 32] { self.to_byte_array() }
+    fn to_baid64_payload(&self) -> [u8; 32] {
+        self.to_byte_array()
+    }
 }
 impl FromBaid64Str for LibId {}
 impl FromStr for LibId {
     type Err = Baid64ParseError;
-    fn from_str(s: &str) -> Result<Self, Self::Err> { Self::from_baid64_str(s) }
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::from_baid64_str(s)
+    }
 }
 impl Display for LibId {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result { self.fmt_baid64(f) }
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        self.fmt_baid64(f)
+    }
 }
 
 impl From<TondiBlake3> for LibId {
-    fn from(hash: TondiBlake3) -> Self { Self(Bytes32::from_byte_array(hash.finish())) }
+    fn from(hash: TondiBlake3) -> Self {
+        Self(Bytes32::from_byte_array(hash.finish()))
+    }
 }
 
 /// Location inside the instruction sequence which can be executed by the core.
@@ -90,13 +98,17 @@ pub struct LibSite {
 }
 
 impl From<Site<LibId>> for LibSite {
-    fn from(site: Site<LibId>) -> Self { Self { lib_id: site.prog_id, offset: site.offset } }
+    fn from(site: Site<LibId>) -> Self {
+        Self { lib_id: site.prog_id, offset: site.offset }
+    }
 }
 
 impl LibSite {
     /// Construct a new library site out of library identifier and code offset.
     #[inline]
-    pub fn new(lib_id: LibId, offset: u16) -> Self { LibSite { lib_id, offset } }
+    pub fn new(lib_id: LibId, offset: u16) -> Self {
+        LibSite { lib_id, offset }
+    }
 }
 
 /// Library segment inside AluVM library which stores references to the external library ids for the
@@ -125,13 +137,17 @@ impl StrictSerialize for Lib {}
 impl StrictDeserialize for Lib {}
 
 impl AsRef<Lib> for Lib {
-    fn as_ref(&self) -> &Self { self }
+    fn as_ref(&self) -> &Self {
+        self
+    }
 }
 
 impl Lib {
     /// Compute a library identifier, which serves as a cryptographic commitment to the library
     /// contents.
-    pub fn lib_id(&self) -> LibId { self.commit_id() }
+    pub fn lib_id(&self) -> LibId {
+        self.commit_id()
+    }
 
     /// String containing all ISA extensions used by the library, enumerated with spaces.
     pub fn isae_string(&self) -> String {
@@ -199,8 +215,10 @@ mod test {
         assert_eq!(id, LibId::from_str("alu:RMcuSs023G_uKE5I2J_lbpr_iw3hXUOtkbt0gCagc54").unwrap());
         assert_eq!(
             id,
-            LibId::from_str("alu:RMcuSs023G_uKE5I2J_lbpr_iw3hXUOtkbt0gCagc54#alfred-mono-whiskey")
-                .unwrap()
+            LibId::from_str(
+                "alu:RMcuSs023G_uKE5I2J_lbpr_iw3hXUOtkbt0gCagc54#alfred-mono-whiskey"
+            )
+            .unwrap()
         );
 
         assert_eq!(id, LibId::from_str("RMcuSs023G_uKE5I2J_lbpr_iw3hXUOtkbt0gCagc54").unwrap());

@@ -63,7 +63,9 @@ impl<W: io::Write> ConfinedWriter<W> {
         }
     }
 
-    pub fn unconfine(self) -> W { self.writer }
+    pub fn unconfine(self) -> W {
+        self.writer
+    }
 }
 
 impl<W: io::Write> io::Write for ConfinedWriter<W> {
@@ -76,15 +78,21 @@ impl<W: io::Write> io::Write for ConfinedWriter<W> {
         Ok(count)
     }
 
-    fn flush(&mut self) -> io::Result<()> { self.writer.flush() }
+    fn flush(&mut self) -> io::Result<()> {
+        self.writer.flush()
+    }
 }
 
 #[derive(Clone, Debug)]
 pub struct StreamWriter<W: io::Write>(ConfinedWriter<W>);
 
 impl<W: io::Write> StreamWriter<W> {
-    pub fn new<const MAX: usize>(inner: W) -> Self { Self(ConfinedWriter::with(MAX, inner)) }
-    pub fn unconfine(self) -> W { self.0.unconfine() }
+    pub fn new<const MAX: usize>(inner: W) -> Self {
+        Self(ConfinedWriter::with(MAX, inner))
+    }
+    pub fn unconfine(self) -> W {
+        self.0.unconfine()
+    }
 }
 
 impl<W: io::Write> WriteRaw for StreamWriter<W> {
@@ -96,35 +104,51 @@ impl<W: io::Write> WriteRaw for StreamWriter<W> {
 }
 
 impl StreamWriter<Vec<u8>> {
-    pub fn in_memory<const MAX: usize>() -> Self { Self::new::<MAX>(vec![]) }
+    pub fn in_memory<const MAX: usize>() -> Self {
+        Self::new::<MAX>(vec![])
+    }
 }
 
 impl StreamWriter<WriteCounter> {
-    pub fn counter<const MAX: usize>() -> Self { Self::new::<MAX>(WriteCounter::default()) }
+    pub fn counter<const MAX: usize>() -> Self {
+        Self::new::<MAX>(WriteCounter::default())
+    }
 }
 
 impl StreamWriter<Sink> {
-    pub fn sink<const MAX: usize>() -> Self { Self::new::<MAX>(Sink::default()) }
+    pub fn sink<const MAX: usize>() -> Self {
+        Self::new::<MAX>(Sink::default())
+    }
 }
 
 #[derive(Debug, From)]
 pub struct StrictWriter<W: WriteRaw>(W);
 
 impl StrictWriter<StreamWriter<Vec<u8>>> {
-    pub fn in_memory<const MAX: usize>() -> Self { Self(StreamWriter::in_memory::<MAX>()) }
+    pub fn in_memory<const MAX: usize>() -> Self {
+        Self(StreamWriter::in_memory::<MAX>())
+    }
 }
 
 impl StrictWriter<StreamWriter<WriteCounter>> {
-    pub fn counter<const MAX: usize>() -> Self { Self(StreamWriter::counter::<MAX>()) }
+    pub fn counter<const MAX: usize>() -> Self {
+        Self(StreamWriter::counter::<MAX>())
+    }
 }
 
 impl StrictWriter<StreamWriter<Sink>> {
-    pub fn sink<const MAX: usize>() -> Self { Self(StreamWriter::sink::<MAX>()) }
+    pub fn sink<const MAX: usize>() -> Self {
+        Self(StreamWriter::sink::<MAX>())
+    }
 }
 
 impl<W: WriteRaw> StrictWriter<W> {
-    pub fn with(writer: W) -> Self { Self(writer) }
-    pub fn unbox(self) -> W { self.0 }
+    pub fn with(writer: W) -> Self {
+        Self(writer)
+    }
+    pub fn unbox(self) -> W {
+        self.0
+    }
 }
 
 impl<W: WriteRaw> TypedWrite for StrictWriter<W> {
@@ -133,7 +157,9 @@ impl<W: WriteRaw> TypedWrite for StrictWriter<W> {
     type UnionDefiner = UnionWriter<W>;
     type RawWriter = W;
 
-    unsafe fn raw_writer(&mut self) -> &mut Self::RawWriter { &mut self.0 }
+    unsafe fn raw_writer(&mut self) -> &mut Self::RawWriter {
+        &mut self.0
+    }
 
     fn write_union<T: StrictUnion>(
         self,
@@ -144,7 +170,9 @@ impl<W: WriteRaw> TypedWrite for StrictWriter<W> {
     }
 
     fn write_enum<T: StrictEnum>(self, value: T) -> io::Result<Self>
-    where u8: From<T> {
+    where
+        u8: From<T>,
+    {
         let mut writer = UnionWriter::with::<T>(self);
         for (_, name) in T::ALL_VARIANTS {
             writer = writer.define_variant(vname!(*name));
@@ -219,20 +247,30 @@ impl<W: WriteRaw, P: StrictParent<W>> StructWriter<W, P> {
         }
     }
 
-    pub fn is_tuple(&self) -> bool { self.tuple_fields.is_some() }
+    pub fn is_tuple(&self) -> bool {
+        self.tuple_fields.is_some()
+    }
 
-    pub fn is_struct(&self) -> bool { !self.is_tuple() }
+    pub fn is_struct(&self) -> bool {
+        !self.is_tuple()
+    }
 
     pub fn named_fields(&self) -> &[FieldName] {
         debug_assert!(self.tuple_fields.is_none(), "tuples do not contain named fields");
         self.named_fields.as_slice()
     }
 
-    pub fn fields_count(&self) -> u8 { self.tuple_fields.unwrap_or(self.named_fields.len() as u8) }
+    pub fn fields_count(&self) -> u8 {
+        self.tuple_fields.unwrap_or(self.named_fields.len() as u8)
+    }
 
-    pub fn name(&self) -> &str { self.name.as_ref().map(|n| n.as_str()).unwrap_or("<unnamed>") }
+    pub fn name(&self) -> &str {
+        self.name.as_ref().map(|n| n.as_str()).unwrap_or("<unnamed>")
+    }
 
-    pub fn into_parent(self) -> P { self.parent }
+    pub fn into_parent(self) -> P {
+        self.parent
+    }
 
     fn write_value(mut self, value: &impl StrictEncode) -> io::Result<Self> {
         let (mut writer, remnant) = self.parent.into_write_split();
@@ -402,11 +440,17 @@ impl<W: WriteRaw> UnionWriter<W> {
         }
     }
 
-    pub fn is_written(&self) -> bool { self.written }
+    pub fn is_written(&self) -> bool {
+        self.written
+    }
 
-    pub fn variants(&self) -> &BTreeMap<Variant, VariantType> { &self.defined_variant }
+    pub fn variants(&self) -> &BTreeMap<Variant, VariantType> {
+        &self.defined_variant
+    }
 
-    pub fn name(&self) -> &str { self.name.as_ref().map(|n| n.as_str()).unwrap_or("<unnamed>") }
+    pub fn name(&self) -> &str {
+        self.name.as_ref().map(|n| n.as_str()).unwrap_or("<unnamed>")
+    }
 
     pub fn tag_by_name(&self, name: &VariantName) -> u8 {
         *self
@@ -498,7 +542,9 @@ impl<W: WriteRaw> DefineUnion for UnionWriter<W> {
         let definer = StructWriter::unnamed(self, false);
         inner(definer)
     }
-    fn complete(self) -> Self::UnionWriter { self._complete_definition() }
+    fn complete(self) -> Self::UnionWriter {
+        self._complete_definition()
+    }
 }
 
 impl<W: WriteRaw> WriteUnion for UnionWriter<W> {
@@ -527,7 +573,9 @@ impl<W: WriteRaw> WriteUnion for UnionWriter<W> {
         let writer = StructWriter::unnamed(self, false);
         inner(writer)
     }
-    fn complete(self) -> Self::Parent { self._complete_write() }
+    fn complete(self) -> Self::Parent {
+        self._complete_write()
+    }
 }
 
 impl<W: WriteRaw> DefineEnum for UnionWriter<W> {
@@ -536,7 +584,9 @@ impl<W: WriteRaw> DefineEnum for UnionWriter<W> {
     fn define_variant(self, name: VariantName) -> Self {
         self._define_variant(name, VariantType::Unit)
     }
-    fn complete(self) -> Self::EnumWriter { self._complete_definition() }
+    fn complete(self) -> Self::EnumWriter {
+        self._complete_definition()
+    }
 }
 
 impl<W: WriteRaw> WriteEnum for UnionWriter<W> {
@@ -544,7 +594,9 @@ impl<W: WriteRaw> WriteEnum for UnionWriter<W> {
     fn write_variant(self, name: VariantName) -> io::Result<Self> {
         self._write_variant(name, VariantType::Unit)
     }
-    fn complete(self) -> Self::Parent { self._complete_write() }
+    fn complete(self) -> Self::Parent {
+        self._complete_write()
+    }
 }
 
 pub trait StrictParent<W: WriteRaw>: TypedParent {
@@ -556,8 +608,12 @@ impl<W: WriteRaw> TypedParent for StrictWriter<W> {}
 impl<W: WriteRaw> TypedParent for UnionWriter<W> {}
 impl<W: WriteRaw> StrictParent<W> for StrictWriter<W> {
     type Remnant = ();
-    fn from_write_split(writer: StrictWriter<W>, _: Self::Remnant) -> Self { writer }
-    fn into_write_split(self) -> (StrictWriter<W>, Self::Remnant) { (self, ()) }
+    fn from_write_split(writer: StrictWriter<W>, _: Self::Remnant) -> Self {
+        writer
+    }
+    fn into_write_split(self) -> (StrictWriter<W>, Self::Remnant) {
+        (self, ())
+    }
 }
 impl<W: WriteRaw> StrictParent<W> for UnionWriter<W> {
     type Remnant = UnionWriter<StreamWriter<Sink>>;
@@ -627,6 +683,10 @@ pub struct ParentDumb;
 impl TypedParent for ParentDumb {}
 impl<W: WriteRaw> StrictParent<W> for ParentDumb {
     type Remnant = ();
-    fn from_write_split(_: StrictWriter<W>, _: Self::Remnant) -> Self { unreachable!() }
-    fn into_write_split(self) -> (StrictWriter<W>, Self::Remnant) { unreachable!() }
+    fn from_write_split(_: StrictWriter<W>, _: Self::Remnant) -> Self {
+        unreachable!()
+    }
+    fn into_write_split(self) -> (StrictWriter<W>, Self::Remnant) {
+        unreachable!()
+    }
 }

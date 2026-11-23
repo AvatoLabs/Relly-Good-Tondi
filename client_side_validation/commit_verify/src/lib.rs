@@ -55,7 +55,6 @@ extern crate serde;
 #[cfg(feature = "derive")]
 pub use commit_encoding_derive::CommitEncode;
 
-mod annexret;
 mod commit;
 mod conceal;
 mod convolve;
@@ -70,25 +69,16 @@ mod digest;
 #[cfg(feature = "vesper")]
 pub mod vesper;
 
-pub use annexret::{
-    create_annex_with_commitment, extract_commitment_from_annex, verify_annex_commitment,
-    AnnexRetError, AnnexRetProtocol, RGB_COMMITMENT_LEN, RGB_COMMITMENT_TLV_TYPE,
-    TAPROOT_ANNEX_PREFIX,
-};
 pub use commit::{CommitVerify, TryCommitVerify, VerifyError};
 pub use conceal::Conceal;
 pub use convolve::{ConvolveCommit, ConvolveCommitProof, ConvolveVerifyError};
-pub use digest::{DefaultHasher, Digest, DigestExt, TondiBlake3, TondiBlake3_20};
-// Re-export sha2 types for backward compatibility with external crates (e.g., sonic-api)
-// These will be deprecated once all dependent crates are updated to use TondiBlake3.
+pub use digest::{DigestExt, TondiBlake3};
 pub use embed::{EmbedCommitProof, EmbedCommitVerify, EmbedVerifyError, VerifyEq};
 pub use id::{
     CommitColType, CommitEncode, CommitEngine, CommitId, CommitLayout, CommitStep, CommitmentId,
     CommitmentLayout, StrictHash,
 };
 pub use merkle::{MerkleBuoy, MerkleHash, MerkleLeaves, MerkleNode, NodeBranching};
-pub use ripemd::Ripemd160;
-pub use sha2::{Sha256, Sha512};
 
 /// Name of the CommitVerify strict type library.
 pub const LIB_NAME_COMMIT_VERIFY: &str = "CommitVerify";
@@ -118,7 +108,9 @@ impl CommitmentProtocol for UntaggedProtocol {}
 pub struct ReservedBytes<const LEN: usize, const VAL: u8 = 0>([u8; LEN]);
 
 impl<const LEN: usize, const VAL: u8> Default for ReservedBytes<LEN, VAL> {
-    fn default() -> Self { Self([VAL; LEN]) }
+    fn default() -> Self {
+        Self([VAL; LEN])
+    }
 }
 
 impl<const LEN: usize, const VAL: u8> From<[u8; LEN]> for ReservedBytes<LEN, VAL> {
@@ -130,7 +122,9 @@ impl<const LEN: usize, const VAL: u8> From<[u8; LEN]> for ReservedBytes<LEN, VAL
 
 impl<const LEN: usize, const VAL: u8> ReservedBytes<LEN, VAL> {
     /// Constant constructor.
-    pub const fn new() -> Self { Self([VAL; LEN]) }
+    pub const fn new() -> Self {
+        Self([VAL; LEN])
+    }
 }
 
 mod _reserved {
@@ -141,7 +135,9 @@ mod _reserved {
     impl<const LEN: usize, const VAL: u8> CommitEncode for ReservedBytes<LEN, VAL> {
         type CommitmentId = StrictHash;
 
-        fn commit_encode(&self, e: &mut CommitEngine) { e.commit_to_serialized(self) }
+        fn commit_encode(&self, e: &mut CommitEngine) {
+            e.commit_to_serialized(self)
+        }
     }
 
     impl<const LEN: usize, const VAL: u8> StrictDecode for ReservedBytes<LEN, VAL> {
@@ -149,7 +145,7 @@ mod _reserved {
             let reserved = reader.read_tuple(|r| r.read_field().map(Self))?;
             if reserved != ReservedBytes::<LEN, VAL>::default() {
                 Err(DecodeError::DataIntegrityError(format!(
-                    "unsupported reserved byte value indicating a future RGB version. Please \
+                    "unsupported reserved byte value indicating a future RGT version. Please \
                      update your software, or, if the problem persists, contact your vendor \
                      providing the following version information: {reserved}"
                 )))
@@ -169,7 +165,9 @@ mod _reserved {
 
         impl<const LEN: usize, const VAL: u8> Serialize for ReservedBytes<LEN, VAL> {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-            where S: Serializer {
+            where
+                S: Serializer,
+            {
                 if serializer.is_human_readable() {
                     serializer.serialize_str(&self.0.to_hex())
                 } else {
@@ -180,7 +178,9 @@ mod _reserved {
 
         impl<'de, const LEN: usize, const VAL: u8> Deserialize<'de> for ReservedBytes<LEN, VAL> {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-            where D: Deserializer<'de> {
+            where
+                D: Deserializer<'de>,
+            {
                 let v = if deserializer.is_human_readable() {
                     let s = String::deserialize(deserializer)?;
                     Vec::<u8>::from_hex(&s)

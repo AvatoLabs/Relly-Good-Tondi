@@ -82,7 +82,8 @@ where
 }
 
 impl<'a> Marshaller<'a, Vec<u8>, Vec<u8>>
-where Self: 'a
+where
+    Self: 'a,
 {
     /// Creates a new marshaller using provided set of libraries.
     #[inline]
@@ -111,11 +112,14 @@ where Self: 'a
 }
 
 impl<'a> Marshaller<'a, SmallBlob, SmallBlob>
-where Self: 'a
+where
+    Self: 'a,
 {
     /// Convert data accumulated by the marshaller into code and data segments.
     #[cfg(any(test, feature = "tests"))]
-    pub fn into_code_data(self) -> (SmallBlob, SmallBlob) { (self.bytecode, self.data) }
+    pub fn into_code_data(self) -> (SmallBlob, SmallBlob) {
+        (self.bytecode, self.data)
+    }
 }
 
 impl<'a, C, D> Marshaller<'a, C, D>
@@ -135,7 +139,9 @@ where
     }
 
     /// Returns the current offset of the marshaller
-    pub const fn offset(&self) -> (u16, u3) { (self.byte_pos, self.bit_pos) }
+    pub const fn offset(&self) -> (u16, u3) {
+        (self.byte_pos, self.bit_pos)
+    }
 
     fn read(&mut self, bit_count: u5) -> Result<u32, CodeEofError> {
         let mut ret = 0u32;
@@ -257,7 +263,9 @@ where
     Self: 'a,
 {
     #[inline]
-    fn pos(&self) -> u16 { self.byte_pos }
+    fn pos(&self) -> u16 {
+        self.byte_pos
+    }
 
     #[inline]
     fn seek(&mut self, byte_pos: u16) -> Result<u16, CodeEofError> {
@@ -270,7 +278,9 @@ where
     }
 
     #[inline]
-    fn is_eof(&self) -> bool { self.byte_pos as usize >= self.bytecode.as_ref().len() }
+    fn is_eof(&self) -> bool {
+        self.byte_pos as usize >= self.bytecode.as_ref().len()
+    }
 
     fn peek_byte(&self) -> Result<u8, CodeEofError> {
         if self.is_eof() {
@@ -279,7 +289,9 @@ where
         Ok(self.bytecode.as_ref()[self.byte_pos as usize])
     }
 
-    fn read_bool(&mut self) -> Result<bool, CodeEofError> { Ok(self.read(u5::with(1))? == 0x01) }
+    fn read_bool(&mut self) -> Result<bool, CodeEofError> {
+        Ok(self.read(u5::with(1))? == 0x01)
+    }
 
     fn read_1bit(&mut self) -> Result<u1, CodeEofError> {
         let res = self.read(u5::with(1))? as u8;
@@ -349,7 +361,9 @@ where
     }
 
     fn read_ref(&mut self) -> Result<LibId, CodeEofError>
-    where LibId: Sized {
+    where
+        LibId: Sized,
+    {
         let pos = self.read_byte()? as usize;
         Ok(self.libs.iter().nth(pos).copied().unwrap_or_default())
     }

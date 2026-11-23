@@ -177,12 +177,20 @@ impl Primitive {
         )
     }
 
-    pub const fn from_code(code: u8) -> Self { Primitive(code) }
-    pub const fn into_code(self) -> u8 { self.0 }
+    pub const fn from_code(code: u8) -> Self {
+        Primitive(code)
+    }
+    pub const fn into_code(self) -> u8 {
+        self.0
+    }
 
-    pub const fn info(self) -> NumInfo { NumInfo::from_code(self.0) }
+    pub const fn info(self) -> NumInfo {
+        NumInfo::from_code(self.0)
+    }
 
-    pub const fn byte_size(self) -> u16 { self.info().byte_size() }
+    pub const fn byte_size(self) -> u16 {
+        self.info().byte_size()
+    }
 }
 
 impl Display for Primitive {
@@ -226,9 +234,13 @@ impl NumInfo {
         }
     }
 
-    pub const fn into_code(self) -> u8 { self.ty.into_code() | self.size.into_code() }
+    pub const fn into_code(self) -> u8 {
+        self.ty.into_code() | self.size.into_code()
+    }
 
-    pub const fn byte_size(self) -> u16 { self.size.byte_size() }
+    pub const fn byte_size(self) -> u16 {
+        self.size.byte_size()
+    }
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
@@ -303,7 +315,9 @@ impl NumCls {
         }
     }
 
-    pub const fn into_code(self) -> u8 { self as u8 }
+    pub const fn into_code(self) -> u8 {
+        self as u8
+    }
 }
 
 #[cfg(test)]

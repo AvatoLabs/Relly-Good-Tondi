@@ -144,7 +144,9 @@ impl DeriveType<'_> {
 }
 
 impl DeriveInner for DeriveType<'_> {
-    fn derive_unit_inner(&self) -> Result<TokenStream2> { self.derive_type() }
+    fn derive_unit_inner(&self) -> Result<TokenStream2> {
+        self.derive_type()
+    }
     fn derive_struct_inner(&self, _fields: &Items<NamedField>) -> Result<TokenStream2> {
         self.derive_type()
     }
@@ -157,7 +159,9 @@ impl DeriveInner for DeriveType<'_> {
 }
 
 impl DeriveInner for DeriveProduct {
-    fn derive_unit_inner(&self) -> Result<TokenStream2> { unreachable!() }
+    fn derive_unit_inner(&self) -> Result<TokenStream2> {
+        unreachable!()
+    }
     fn derive_enum_inner(&self, _variants: &Items<Variant>) -> Result<TokenStream2> {
         unreachable!()
     }
@@ -171,11 +175,15 @@ impl DeriveInner for DeriveProduct {
 }
 
 impl DeriveInner for DeriveSum {
-    fn derive_unit_inner(&self) -> Result<TokenStream2> { unreachable!() }
+    fn derive_unit_inner(&self) -> Result<TokenStream2> {
+        unreachable!()
+    }
     fn derive_struct_inner(&self, _fields: &Items<NamedField>) -> Result<TokenStream2> {
         unreachable!()
     }
-    fn derive_tuple_inner(&self, _fields: &Items<Field>) -> Result<TokenStream2> { unreachable!() }
+    fn derive_tuple_inner(&self, _fields: &Items<Field>) -> Result<TokenStream2> {
+        unreachable!()
+    }
 
     fn derive_enum_inner(&self, variants: &Items<Variant>) -> Result<TokenStream2> {
         let mut orders = Vec::with_capacity(variants.len());
@@ -218,7 +226,9 @@ impl DeriveInner for DeriveSum {
 }
 
 impl DeriveInner for DeriveTuple {
-    fn derive_unit_inner(&self) -> Result<TokenStream2> { unreachable!() }
+    fn derive_unit_inner(&self) -> Result<TokenStream2> {
+        unreachable!()
+    }
     fn derive_struct_inner(&self, _fields: &Items<NamedField>) -> Result<TokenStream2> {
         unreachable!()
     }
@@ -235,11 +245,15 @@ impl DeriveInner for DeriveTuple {
 }
 
 impl DeriveInner for DeriveStruct {
-    fn derive_unit_inner(&self) -> Result<TokenStream2> { unreachable!() }
+    fn derive_unit_inner(&self) -> Result<TokenStream2> {
+        unreachable!()
+    }
     fn derive_enum_inner(&self, _variants: &Items<Variant>) -> Result<TokenStream2> {
         unreachable!()
     }
-    fn derive_tuple_inner(&self, _fields: &Items<Field>) -> Result<TokenStream2> { unreachable!() }
+    fn derive_tuple_inner(&self, _fields: &Items<Field>) -> Result<TokenStream2> {
+        unreachable!()
+    }
 
     fn derive_struct_inner(&self, fields: &Items<NamedField>) -> Result<TokenStream2> {
         let mut name = Vec::with_capacity(fields.len());
@@ -259,11 +273,15 @@ impl DeriveInner for DeriveStruct {
 }
 
 impl DeriveInner for DeriveEnum {
-    fn derive_unit_inner(&self) -> Result<TokenStream2> { unreachable!() }
+    fn derive_unit_inner(&self) -> Result<TokenStream2> {
+        unreachable!()
+    }
     fn derive_struct_inner(&self, _fields: &Items<NamedField>) -> Result<TokenStream2> {
         unreachable!()
     }
-    fn derive_tuple_inner(&self, _fields: &Items<Field>) -> Result<TokenStream2> { unreachable!() }
+    fn derive_tuple_inner(&self, _fields: &Items<Field>) -> Result<TokenStream2> {
+        unreachable!()
+    }
 
     fn derive_enum_inner(&self, _variants: &Items<Variant>) -> Result<TokenStream2> {
         Ok(TokenStream2::new())
@@ -271,11 +289,15 @@ impl DeriveInner for DeriveEnum {
 }
 
 impl DeriveInner for DeriveUnion {
-    fn derive_unit_inner(&self) -> Result<TokenStream2> { unreachable!() }
+    fn derive_unit_inner(&self) -> Result<TokenStream2> {
+        unreachable!()
+    }
     fn derive_struct_inner(&self, _fields: &Items<NamedField>) -> Result<TokenStream2> {
         unreachable!()
     }
-    fn derive_tuple_inner(&self, _fields: &Items<Field>) -> Result<TokenStream2> { unreachable!() }
+    fn derive_tuple_inner(&self, _fields: &Items<Field>) -> Result<TokenStream2> {
+        unreachable!()
+    }
 
     fn derive_enum_inner(&self, _variants: &Items<Variant>) -> Result<TokenStream2> {
         Ok(TokenStream2::new())

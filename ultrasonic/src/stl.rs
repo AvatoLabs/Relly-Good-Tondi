@@ -32,19 +32,22 @@ use strict_types::{CompileError, TypeLib};
 
 use crate::{ContractId, Issue, Operation, Opid, LIB_NAME_ULTRASONIC};
 
-/// Strict types id for the library providing data types for RGB consensus.
+/// Strict types id for the library providing data types for RGT consensus.
 pub const LIB_ID_ULTRASONIC: &str =
-    "stl:otovXd5j-Gcwzd3y-NKdMUuW-dQNAwFS-5qzO12F-yK_evjY#druid-mozart-puzzle";
+    "stl:sNsQqAsW-YlDEZr3-bDH0e5_-57QSud4-Dp2sv~2-8w1ijac#iris-button-vatican";
 
 #[allow(clippy::result_large_err)]
 fn _usonic_stl() -> Result<TypeLib, CompileError> {
-    LibBuilder::with(libname!(LIB_NAME_ULTRASONIC), [
-        std_stl().to_dependency_types(),
-        strict_types_stl().to_dependency_types(),
-        commit_verify_stl().to_dependency_types(),
-        aluvm_stl().to_dependency_types(),
-        finite_field_stl().to_dependency_types(),
-    ])
+    LibBuilder::with(
+        libname!(LIB_NAME_ULTRASONIC),
+        [
+            std_stl().to_dependency_types(),
+            strict_types_stl().to_dependency_types(),
+            commit_verify_stl().to_dependency_types(),
+            aluvm_stl().to_dependency_types(),
+            finite_field_stl().to_dependency_types(),
+        ],
+    )
     .transpile::<Opid>()
     .transpile::<Operation>()
     .transpile::<ContractId>()
@@ -52,8 +55,10 @@ fn _usonic_stl() -> Result<TypeLib, CompileError> {
     .compile()
 }
 
-/// Generates a strict type library providing data types for RGB consensus.
-pub fn usonic_stl() -> TypeLib { _usonic_stl().expect("invalid strict type Ultrasonic library") }
+/// Generates a strict type library providing data types for RGT consensus.
+pub fn usonic_stl() -> TypeLib {
+    _usonic_stl().expect("invalid strict type Ultrasonic library")
+}
 
 #[cfg(test)]
 mod test {

@@ -69,18 +69,26 @@ pub enum Step {
 pub struct Path(SmallVec<Step>);
 
 impl Path {
-    pub fn new() -> Path { Path::default() }
+    pub fn new() -> Path {
+        Path::default()
+    }
 
-    pub fn with(step: Step) -> Path { Path(small_vec!(step)) }
+    pub fn with(step: Step) -> Path {
+        Path(small_vec!(step))
+    }
 
-    pub fn iter(&self) -> std::slice::Iter<'_, Step> { self.0.iter() }
+    pub fn iter(&self) -> std::slice::Iter<'_, Step> {
+        self.0.iter()
+    }
 }
 
 impl<'path> IntoIterator for &'path Path {
     type Item = &'path Step;
     type IntoIter = std::slice::Iter<'path, Step>;
 
-    fn into_iter(self) -> Self::IntoIter { self.0.iter() }
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.iter()
+    }
 }
 
 impl Display for Path {
@@ -100,7 +108,9 @@ pub struct PathError<'ty, Ref: TypeRef> {
 }
 
 impl<'ty, Ref: TypeRef> PathError<'ty, Ref> {
-    pub fn new(ty: &'ty Ty<Ref>, path: Path) -> Self { PathError { ty, path } }
+    pub fn new(ty: &'ty Ty<Ref>, path: Path) -> Self {
+        PathError { ty, path }
+    }
 }
 
 impl<Ref: TypeRef> Ty<Ref> {

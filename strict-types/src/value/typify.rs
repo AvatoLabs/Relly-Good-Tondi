@@ -55,9 +55,15 @@ pub struct TypedVal {
 }
 
 impl TypedVal {
-    pub fn as_orig(&self) -> &TypeSymbol { &self.orig }
-    pub fn as_val(&self) -> &StrictVal { &self.val }
-    pub fn unbox(self) -> StrictVal { self.val }
+    pub fn as_orig(&self) -> &TypeSymbol {
+        &self.orig
+    }
+    pub fn as_val(&self) -> &StrictVal {
+        &self.val
+    }
+    pub fn unbox(self) -> StrictVal {
+        self.val
+    }
 }
 
 #[derive(Clone, Eq, PartialEq, Debug, Display, Error, From)]
@@ -120,10 +126,18 @@ trait PrimitiveValue {
 }
 
 impl PrimitiveValue for Primitive {
-    fn is_small_unsigned(&self) -> bool { self.into_code() <= 16 }
-    fn is_large_unsigned(&self) -> bool { self.into_code() > 16 && self.into_code() < 0x40 }
-    fn is_small_signed(&self) -> bool { self.into_code() >= 0x40 && self.into_code() <= 0x4f }
-    fn is_large_signed(&self) -> bool { self.into_code() > 0x4f && self.into_code() < 0x80 }
+    fn is_small_unsigned(&self) -> bool {
+        self.into_code() <= 16
+    }
+    fn is_large_unsigned(&self) -> bool {
+        self.into_code() > 16 && self.into_code() < 0x40
+    }
+    fn is_small_signed(&self) -> bool {
+        self.into_code() >= 0x40 && self.into_code() <= 0x4f
+    }
+    fn is_large_signed(&self) -> bool {
+        self.into_code() > 0x4f && self.into_code() < 0x80
+    }
 }
 
 impl SymbolicSys {

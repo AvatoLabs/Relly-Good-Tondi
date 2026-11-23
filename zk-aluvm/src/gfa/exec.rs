@@ -35,11 +35,17 @@ impl<Id: SiteId> Instruction<Id> for FieldInstr {
     type Core = GfaCore;
     type Context<'ctx> = ();
 
-    fn is_goto_target(&self) -> bool { false }
+    fn is_goto_target(&self) -> bool {
+        false
+    }
 
-    fn local_goto_pos(&mut self) -> GotoTarget<'_> { GotoTarget::None }
+    fn local_goto_pos(&mut self) -> GotoTarget<'_> {
+        GotoTarget::None
+    }
 
-    fn remote_goto_pos(&mut self) -> Option<&mut Site<Id>> { None }
+    fn remote_goto_pos(&mut self) -> Option<&mut Site<Id>> {
+        None
+    }
 
     fn src_regs(&self) -> BTreeSet<RegE> {
         match *self {

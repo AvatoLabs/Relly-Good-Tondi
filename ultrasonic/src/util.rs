@@ -45,16 +45,24 @@ use crate::LIB_NAME_ULTRASONIC;
 pub struct Identity(RString<AsciiPrintable, AsciiPrintable, 1, 4096>);
 
 impl Default for Identity {
-    fn default() -> Self { Self::from("ssi:anonymous") }
+    fn default() -> Self {
+        Self::from("ssi:anonymous")
+    }
 }
 
 impl From<&'static str> for Identity {
-    fn from(s: &'static str) -> Self { Self(RString::from(s)) }
+    fn from(s: &'static str) -> Self {
+        Self(RString::from(s))
+    }
 }
 
 impl Identity {
     /// Tests whether the identity is not provided, which is equal to an anonymous identity.
-    pub fn is_empty(&self) -> bool { self.is_anonymous() }
+    pub fn is_empty(&self) -> bool {
+        self.is_anonymous()
+    }
     /// Tests whether the identity is anonymous.
-    pub fn is_anonymous(&self) -> bool { self == &default!() }
+    pub fn is_anonymous(&self) -> bool {
+        self == &default!()
+    }
 }

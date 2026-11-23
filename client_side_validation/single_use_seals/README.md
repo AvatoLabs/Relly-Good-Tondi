@@ -1,6 +1,6 @@
 # Single-use Seals for Tondi
 
-This crate defines the generic seal traits used by RGB-on-Tondi. A seal is a
+This crate defines the generic seal traits used by RGT. A seal is a
 unique publication point that can be closed over one message and then verified
 independently by a client.
 
@@ -11,13 +11,12 @@ sequenceDiagram
     participant Wallet
     participant TondiTx as Tondi transaction
     participant Client as Verifier
-    Wallet->>TondiTx: close seal with P2MR witness
+    Wallet->>TondiTx: consume the previous Note and commit the operation
     TondiTx-->>Client: publish transaction and witness data
     Client->>Client: verify seal, message, and commitment proof
 ```
 
-The production RGB-on-Tondi path uses P2MR-backed witnesses over Tondi L1
-outputs. Legacy host schemes are not part of the production workflow.
+The receiver verifies the exact signed envelope and its successful execution in a certified checkpoint.
 
 ## Trait Shape
 

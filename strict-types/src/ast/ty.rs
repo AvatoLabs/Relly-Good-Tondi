@@ -39,12 +39,22 @@ use crate::ast::Iter;
 pub trait TypeRef:
     SemCommit + Clone + StrictEncode + StrictDecode + StrictDumb + Eq + Debug + Sized
 {
-    fn as_ty(&self) -> Option<&Ty<Self>> { None }
-    fn type_refs(&self) -> Iter<'_, Self> { Iter::from(self) }
+    fn as_ty(&self) -> Option<&Ty<Self>> {
+        None
+    }
+    fn type_refs(&self) -> Iter<'_, Self> {
+        Iter::from(self)
+    }
 
-    fn is_compound(&self) -> bool { false }
-    fn is_byte(&self) -> bool { false }
-    fn is_unicode_char(&self) -> bool { false }
+    fn is_compound(&self) -> bool {
+        false
+    }
+    fn is_byte(&self) -> bool {
+        false
+    }
+    fn is_unicode_char(&self) -> bool {
+        false
+    }
 }
 
 pub trait PrimitiveRef: TypeRef {
@@ -186,14 +196,28 @@ impl<Ref: TypeRef> Ty<Ref> {
 
     pub const UNICODE: Ty<Ref> = Ty::UnicodeChar;
 
-    pub fn enumerate(variants: EnumVariants) -> Self { Ty::Enum(variants) }
-    pub fn union(variants: UnionVariants<Ref>) -> Self { Ty::Union(variants) }
-    pub fn struc(fields: NamedFields<Ref>) -> Self { Ty::Struct(fields) }
-    pub fn tuple(fields: UnnamedFields<Ref>) -> Self { Ty::Tuple(fields) }
+    pub fn enumerate(variants: EnumVariants) -> Self {
+        Ty::Enum(variants)
+    }
+    pub fn union(variants: UnionVariants<Ref>) -> Self {
+        Ty::Union(variants)
+    }
+    pub fn struc(fields: NamedFields<Ref>) -> Self {
+        Ty::Struct(fields)
+    }
+    pub fn tuple(fields: UnnamedFields<Ref>) -> Self {
+        Ty::Tuple(fields)
+    }
 
-    pub fn list(ty: Ref, sizing: Sizing) -> Self { Ty::List(ty, sizing) }
-    pub fn set(ty: Ref, sizing: Sizing) -> Self { Ty::Set(ty, sizing) }
-    pub fn map(key: Ref, val: Ref, sizing: Sizing) -> Self { Ty::Map(key, val, sizing) }
+    pub fn list(ty: Ref, sizing: Sizing) -> Self {
+        Ty::List(ty, sizing)
+    }
+    pub fn set(ty: Ref, sizing: Sizing) -> Self {
+        Ty::Set(ty, sizing)
+    }
+    pub fn map(key: Ref, val: Ref, sizing: Sizing) -> Self {
+        Ty::Map(key, val, sizing)
+    }
 
     pub fn is_char_enum(&self) -> bool {
         if let Ty::Tuple(fields) = self {
@@ -212,14 +236,22 @@ impl<Ref: TypeRef> Ty<Ref> {
             _ => false,
         }
     }
-    pub fn is_primitive(&self) -> bool { matches!(self, Ty::Primitive(_) | Ty::UnicodeChar) }
+    pub fn is_primitive(&self) -> bool {
+        matches!(self, Ty::Primitive(_) | Ty::UnicodeChar)
+    }
     pub fn is_collection(&self) -> bool {
         matches!(self, Ty::Array(..) | Ty::List(..) | Ty::Set(..) | Ty::Map(..))
     }
 
-    pub fn is_newtype(&self) -> bool { matches!(self, Ty::Tuple(fields) if fields.len() == 1) }
-    pub fn is_byte_array(&self) -> bool { matches!(self, Ty::Array(ty, _) if ty.is_byte()) }
-    pub fn is_option(&self) -> bool { self.as_some().is_some() }
+    pub fn is_newtype(&self) -> bool {
+        matches!(self, Ty::Tuple(fields) if fields.len() == 1)
+    }
+    pub fn is_byte_array(&self) -> bool {
+        matches!(self, Ty::Array(ty, _) if ty.is_byte())
+    }
+    pub fn is_option(&self) -> bool {
+        self.as_some().is_some()
+    }
     pub fn as_some(&self) -> Option<&Ref> {
         match self {
             Ty::Union(variants)
@@ -248,7 +280,8 @@ impl<Ref: TypeRef> Ty<Ref> {
 }
 
 impl<Ref: TypeRef> Display for Ty<Ref>
-where Ref: Display
+where
+    Ref: Display,
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
@@ -340,8 +373,12 @@ impl<Ref: TypeRef> Ty<Ref> {
         }
     }
 
-    pub fn is_byte(&self) -> bool { matches!(self, x if x == &Ty::BYTE || x == &Ty::U8) }
-    pub fn is_unicode_char(&self) -> bool { matches!(self, x if x == &Ty::UNICODE) }
+    pub fn is_byte(&self) -> bool {
+        matches!(self, x if x == &Ty::BYTE || x == &Ty::U8)
+    }
+    pub fn is_unicode_char(&self) -> bool {
+        matches!(self, x if x == &Ty::UNICODE)
+    }
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, From)]
@@ -354,7 +391,8 @@ pub struct Field<Ref: TypeRef> {
 }
 
 impl<Ref: TypeRef> Display for Field<Ref>
-where Ref: Display
+where
+    Ref: Display,
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         Display::fmt(&self.name, f)?;
@@ -372,17 +410,25 @@ pub struct NamedFields<Ref: TypeRef>(NonEmptyVec<Field<Ref>, { u8::MAX as usize 
 impl<Ref: TypeRef> Wrapper for NamedFields<Ref> {
     type Inner = NonEmptyVec<Field<Ref>, { u8::MAX as usize }>;
 
-    fn from_inner(inner: Self::Inner) -> Self { Self(inner) }
+    fn from_inner(inner: Self::Inner) -> Self {
+        Self(inner)
+    }
 
-    fn as_inner(&self) -> &Self::Inner { &self.0 }
+    fn as_inner(&self) -> &Self::Inner {
+        &self.0
+    }
 
-    fn into_inner(self) -> Self::Inner { self.0 }
+    fn into_inner(self) -> Self::Inner {
+        self.0
+    }
 }
 
 impl<Ref: TypeRef> Deref for NamedFields<Ref> {
     type Target = NonEmptyVec<Field<Ref>, { u8::MAX as usize }>;
 
-    fn deref(&self) -> &Self::Target { &self.0 }
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
 }
 
 impl<Ref: TypeRef> TryFrom<Vec<Field<Ref>>> for NamedFields<Ref> {
@@ -397,27 +443,36 @@ impl<Ref: TypeRef> IntoIterator for NamedFields<Ref> {
     type Item = Field<Ref>;
     type IntoIter = std::vec::IntoIter<Field<Ref>>;
 
-    fn into_iter(self) -> Self::IntoIter { self.0.into_iter() }
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.into_iter()
+    }
 }
 
 impl<'a, Ref: TypeRef> IntoIterator for &'a NamedFields<Ref> {
     type Item = &'a Field<Ref>;
     type IntoIter = std::slice::Iter<'a, Field<Ref>>;
 
-    fn into_iter(self) -> Self::IntoIter { self.0.iter() }
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.iter()
+    }
 }
 
 impl<Ref: TypeRef> NamedFields<Ref> {
-    pub fn into_inner(self) -> Vec<Field<Ref>> { self.0.release() }
+    pub fn into_inner(self) -> Vec<Field<Ref>> {
+        self.0.release()
+    }
 
-    pub fn ty_by_pos(&self, pos: u8) -> Option<&Ref> { self.0.get(pos as usize).map(|f| &f.ty) }
+    pub fn ty_by_pos(&self, pos: u8) -> Option<&Ref> {
+        self.0.get(pos as usize).map(|f| &f.ty)
+    }
     pub fn ty_by_name(&self, name: &FieldName) -> Option<&Ref> {
         self.0.iter().find(|f| &f.name == name).map(|f| &f.ty)
     }
 }
 
 impl<Ref: TypeRef> Display for NamedFields<Ref>
-where Ref: Display
+where
+    Ref: Display,
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let len = self.len();
@@ -447,17 +502,25 @@ pub struct UnnamedFields<Ref: TypeRef>(NonEmptyVec<Ref, { u8::MAX as usize }>);
 impl<Ref: TypeRef> Wrapper for UnnamedFields<Ref> {
     type Inner = NonEmptyVec<Ref, { u8::MAX as usize }>;
 
-    fn from_inner(inner: Self::Inner) -> Self { Self(inner) }
+    fn from_inner(inner: Self::Inner) -> Self {
+        Self(inner)
+    }
 
-    fn as_inner(&self) -> &Self::Inner { &self.0 }
+    fn as_inner(&self) -> &Self::Inner {
+        &self.0
+    }
 
-    fn into_inner(self) -> Self::Inner { self.0 }
+    fn into_inner(self) -> Self::Inner {
+        self.0
+    }
 }
 
 impl<Ref: TypeRef> Deref for UnnamedFields<Ref> {
     type Target = NonEmptyVec<Ref, { u8::MAX as usize }>;
 
-    fn deref(&self) -> &Self::Target { &self.0 }
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
 }
 
 impl<Ref: TypeRef> TryFrom<Vec<Ref>> for UnnamedFields<Ref> {
@@ -472,24 +535,33 @@ impl<Ref: TypeRef> IntoIterator for UnnamedFields<Ref> {
     type Item = Ref;
     type IntoIter = std::vec::IntoIter<Ref>;
 
-    fn into_iter(self) -> Self::IntoIter { self.0.into_iter() }
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.into_iter()
+    }
 }
 
 impl<'a, Ref: TypeRef> IntoIterator for &'a UnnamedFields<Ref> {
     type Item = &'a Ref;
     type IntoIter = std::slice::Iter<'a, Ref>;
 
-    fn into_iter(self) -> Self::IntoIter { self.0.iter() }
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.iter()
+    }
 }
 
 impl<Ref: TypeRef> UnnamedFields<Ref> {
-    pub fn into_inner(self) -> Vec<Ref> { self.0.release() }
+    pub fn into_inner(self) -> Vec<Ref> {
+        self.0.release()
+    }
 
-    pub fn ty_by_pos(&self, pos: u8) -> Option<&Ref> { self.0.get(pos as usize) }
+    pub fn ty_by_pos(&self, pos: u8) -> Option<&Ref> {
+        self.0.get(pos as usize)
+    }
 }
 
 impl<Ref: TypeRef> Display for UnnamedFields<Ref>
-where Ref: Display
+where
+    Ref: Display,
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let mut iter = self.iter();
@@ -514,17 +586,25 @@ pub struct UnionVariants<Ref: TypeRef>(NonEmptyOrdMap<Variant, Ref, { u8::MAX as
 impl<Ref: TypeRef> Wrapper for UnionVariants<Ref> {
     type Inner = NonEmptyOrdMap<Variant, Ref, { u8::MAX as usize }>;
 
-    fn from_inner(inner: Self::Inner) -> Self { Self(inner) }
+    fn from_inner(inner: Self::Inner) -> Self {
+        Self(inner)
+    }
 
-    fn as_inner(&self) -> &Self::Inner { &self.0 }
+    fn as_inner(&self) -> &Self::Inner {
+        &self.0
+    }
 
-    fn into_inner(self) -> Self::Inner { self.0 }
+    fn into_inner(self) -> Self::Inner {
+        self.0
+    }
 }
 
 impl<Ref: TypeRef> Deref for UnionVariants<Ref> {
     type Target = NonEmptyOrdMap<Variant, Ref, { u8::MAX as usize }>;
 
-    fn deref(&self) -> &Self::Target { &self.0 }
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
 }
 
 impl<Ref: TypeRef> TryFrom<BTreeMap<Variant, Ref>> for UnionVariants<Ref> {
@@ -539,21 +619,31 @@ impl<Ref: TypeRef> IntoIterator for UnionVariants<Ref> {
     type Item = (Variant, Ref);
     type IntoIter = std::collections::btree_map::IntoIter<Variant, Ref>;
 
-    fn into_iter(self) -> Self::IntoIter { self.0.into_iter() }
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.into_iter()
+    }
 }
 
 impl<'a, Ref: TypeRef> IntoIterator for &'a UnionVariants<Ref> {
     type Item = (&'a Variant, &'a Ref);
     type IntoIter = std::collections::btree_map::Iter<'a, Variant, Ref>;
 
-    fn into_iter(self) -> Self::IntoIter { self.0.iter() }
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.iter()
+    }
 }
 
 impl<Ref: TypeRef> UnionVariants<Ref> {
-    pub fn into_inner(self) -> BTreeMap<Variant, Ref> { self.0.release() }
+    pub fn into_inner(self) -> BTreeMap<Variant, Ref> {
+        self.0.release()
+    }
 
-    pub fn unwrap_first(&self) -> &Variant { self.0.first_key_value().unwrap().0 }
-    pub fn unwrap_last(&self) -> &Variant { self.0.last_key_value().unwrap().0 }
+    pub fn unwrap_first(&self) -> &Variant {
+        self.0.first_key_value().unwrap().0
+    }
+    pub fn unwrap_last(&self) -> &Variant {
+        self.0.last_key_value().unwrap().0
+    }
 
     pub fn into_keys(self) -> std::collections::btree_map::IntoKeys<Variant, Ref> {
         self.0.release().into_keys()
@@ -563,7 +653,9 @@ impl<Ref: TypeRef> UnionVariants<Ref> {
         self.0.release().into_values()
     }
 
-    pub fn has_tag(&self, tag: u8) -> bool { self.0.keys().any(|v| v.tag == tag) }
+    pub fn has_tag(&self, tag: u8) -> bool {
+        self.0.keys().any(|v| v.tag == tag)
+    }
     pub fn by_tag(&self, tag: u8) -> Option<(&Variant, &Ref)> {
         self.0.iter().find(|(v, _)| v.tag == tag)
     }
@@ -576,7 +668,9 @@ impl<Ref: TypeRef> UnionVariants<Ref> {
     pub fn ty_by_tag(&self, tag: u8) -> Option<&Ref> {
         self.0.iter().find(|(v, _)| v.tag == tag).map(|(_, ty)| ty)
     }
-    pub fn ty_by_pos(&self, pos: u8) -> Option<&Ref> { self.0.values().nth(pos as usize) }
+    pub fn ty_by_pos(&self, pos: u8) -> Option<&Ref> {
+        self.0.values().nth(pos as usize)
+    }
     pub fn tag_by_name(&self, name: &VariantName) -> Option<u8> {
         self.0.keys().find(|v| &v.name == name).map(|v| v.tag)
     }
@@ -589,7 +683,8 @@ impl<Ref: TypeRef> UnionVariants<Ref> {
 }
 
 impl<Ref: TypeRef> Display for UnionVariants<Ref>
-where Ref: Display
+where
+    Ref: Display,
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let mut iter = self.iter();
@@ -657,18 +752,24 @@ impl IntoIterator for EnumVariants {
     type Item = Variant;
     type IntoIter = std::collections::btree_set::IntoIter<Variant>;
 
-    fn into_iter(self) -> Self::IntoIter { self.0.into_iter() }
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.into_iter()
+    }
 }
 
 impl<'a> IntoIterator for &'a EnumVariants {
     type Item = &'a Variant;
     type IntoIter = std::collections::btree_set::Iter<'a, Variant>;
 
-    fn into_iter(self) -> Self::IntoIter { self.0.iter() }
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.iter()
+    }
 }
 
 impl EnumVariants {
-    pub fn into_inner(self) -> BTreeSet<Variant> { self.0.release() }
+    pub fn into_inner(self) -> BTreeSet<Variant> {
+        self.0.release()
+    }
 
     pub fn tag_by_name(&self, name: &VariantName) -> Option<u8> {
         self.0.iter().find(|v| &v.name == name).map(|v| v.tag)
@@ -676,9 +777,15 @@ impl EnumVariants {
     pub fn name_by_tag(&self, tag: u8) -> Option<&VariantName> {
         self.0.iter().find(|v| v.tag == tag).map(|v| &v.name)
     }
-    pub fn has_tag(&self, tag: u8) -> bool { self.0.iter().any(|v| v.tag == tag) }
-    pub fn has_name(&self, name: &VariantName) -> bool { self.0.iter().any(|v| &v.name == name) }
-    pub fn by_tag(&self, tag: u8) -> Option<&Variant> { self.0.iter().find(|v| v.tag == tag) }
+    pub fn has_tag(&self, tag: u8) -> bool {
+        self.0.iter().any(|v| v.tag == tag)
+    }
+    pub fn has_name(&self, name: &VariantName) -> bool {
+        self.0.iter().any(|v| &v.name == name)
+    }
+    pub fn by_tag(&self, tag: u8) -> Option<&Variant> {
+        self.0.iter().find(|v| v.tag == tag)
+    }
     pub fn by_name(&self, name: &VariantName) -> Option<&Variant> {
         self.0.iter().find(|v| &v.name == name)
     }
